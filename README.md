@@ -1,4 +1,8 @@
 # cs207-FinalProject
+### Group Names 
+Feiyu Chen
+Yueting Luo
+Yan Zhao
 
 [![Build Status](https://travis-ci.org/D-Y-F-S/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/D-Y-F-S/cs207-FinalProject)
 
