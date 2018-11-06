@@ -6,6 +6,16 @@ import pytest
 import numpy as np
 import dyfs.forward as fwd
 
+def test_adding_constant():
+    a = fwd.Variable()
+    assert (a+1).derivative_at(a, {a: 0.0}) == 1.0
+    assert (1+a).derivative_at(a, {a: 0.0}) == 1.0
+    
+def test_subtracting_constant():
+    a = fwd.Variable()
+    assert (a-1).derivative_at(a, {a: 0.0}) == 1.0
+    assert (1-a).derivative_at(a, {a: 0.0}) == -1.0
+
 def test_adding_three_variables():
     a = fwd.Variable()
     b = fwd.Variable()
