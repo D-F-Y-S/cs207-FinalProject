@@ -26,6 +26,8 @@ class Expression:
     
     def derivative_at(self, var, val_dict):
         
+        if var is self: return 1.0
+        
         # sub_expr2 is None implies that _ele_func is an unary operator
         if self._sub_expr2 is None:
             return self._ele_func.derivative_at(
