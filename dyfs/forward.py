@@ -63,6 +63,30 @@ class Expression:
             return Expression(Sub, another, self)
         else:
             return Expression(Sub, Constant(another), self)
+    
+    def __mul__(self, another):
+        if isinstance(another, Expression):
+            return Expression(Mul,self,another)
+        else:
+            return Expression(Mul, self, Constant(another))
+
+    def __rmul__(self, another):
+        if isinstance(another, Expression):
+            return Expression(Mul,another,self)
+        else:
+            return Expression(Mul, Constant(another),self)
+    
+    def __truediv__(self, another):
+        if isinstance(another, Expression):
+            return Expression(Div,self,another)
+        else:
+            return Expression(Div, self, Constant(another))
+
+    def __rtruediv__(self, another):
+        if isinstance(another, Expression):
+            return Expression(Div,another,self)
+        else:
+            return Expression(Div, Constant(another),self)
 
 
 class Variable(Expression):
@@ -107,6 +131,31 @@ class Sub:
         return sub_expr1.derivative_at(var, val_dict) - \
                sub_expr2.derivative_at(var, val_dict)
 
+class Mul:
+    @staticmethod
+    def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        return sub_expr1.evaluation_at(val_dict) *\
+               sub_expr2.evaluation_at(val_dict)
+    @staticmethod
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
+        return sub_expr1.derivative_at(var, val_dict) * \
+               sub_expr2.evaluation_at(val_dict)+ \
+               sub_expr1.evaluation_at(val_dict) *\
+               sub_expr2.derivative_at(var, val_dict)
+               
+class Div:
+    @staticmethod
+    def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        return sub_expr1.evaluation_at(val_dict) /\
+               sub_expr2.evaluation_at(val_dict)
+    @staticmethod
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
+        return  sub_expr1.derivative_at(var, val_dict) / \
+                sub_expr2.evaluation_at(val_dict)+ \
+                sub_expr1.evaluation_at(val_dict) *\
+                sub_expr2.derivative_at(var, val_dict)/\
+                sub_expr2.evaluation_at(val_dict)/\
+                sub_expr2.evaluation_at(val_dict)
 
 class Exp:
     @staticmethod
