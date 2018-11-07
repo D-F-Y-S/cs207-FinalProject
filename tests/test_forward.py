@@ -4,7 +4,7 @@ want to separate the code into multiple files later.
 """
 import pytest
 import numpy as np
-import dyfs.forward as fwd
+import autodiff.forward as fwd
 
 def test_adding_constant():
     a = fwd.Variable()
