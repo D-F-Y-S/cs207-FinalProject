@@ -76,7 +76,7 @@ def test_power():
 def test_sin():
     a = fwd.Variable()
     b = fwd.Variable()
-    f = sin(a*b)
+    f = fwd.sin(a*b)
     assert(f.derivative_at(a,{a:2,b:2}==np.cos(4)*2))
     assert(f.evaluation_at({a:1,b:2}) == np.sin(2))
 
@@ -85,8 +85,8 @@ def test_cos():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a+b
-    f1 = cos(a+c)
-    f2 = cos(a*b)
+    f1 = fwd.cos(a+c)
+    f2 = fwd.cos(a*b)
     assert(f1.evaluation_at({a:1.0, b: 2.0}) == np.cos(4))
     assert(f2.evaluation_at({a:1.0,b:2}) == np.cos(2))
     assert(f1.derivative_at(a,{a:1.0, b: 2.0}) == -np.sin(1+3)*2)
@@ -96,7 +96,7 @@ def test_tan():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = tan(c*b)
+    f = fwd.tan(c*b)
     assert f.evaluation_at({a:1,b:2}) == np.tan(4)
     assert f.derivative_at(c,{a:1,b:2}) == 2*(1/np.cos(4*2))
 
@@ -104,7 +104,7 @@ def test_cotan():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = cotan(c*b)
+    f = fwd.cotan(c*b)
     assert f.evaluation_at({a:1,b:2}) == 1/np.tan(4)
     assert f.derivative_at(c,{a:1,b:2}) == -(1/(np.sin(4)**2))*2
 
@@ -112,7 +112,7 @@ def test_sec():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = sec(c*b)
+    f = fwd.sec(c*b)
     assert f.evaluation_at({a:1,b:2}) == 1/np.cos(4)
     assert f.derivative_at(c,{a:1,b:2}) == np.tan(4)*(1/np.cos(4))*2
     
@@ -120,7 +120,7 @@ def test_csc():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = csc(c*b)
+    f = fwd.csc(c*b)
     assert f.evaluation_at({a:1,b:2}) == 1/np.sin(4)
     assert f.derivative_at(c,{a:1,b:2}) == (1/np.tan(4))*(1/np.sin(4))*2
 
@@ -128,7 +128,7 @@ def test_sinh():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = sinh(c*b)
+    f = fwd.sinh(c*b)
     assert f.evaluation_at({a:1,b:2})==np.sinh(4)
     assert f.derivative_at(c,{a:1,b:2})==np.cosh(4)*2
 
@@ -137,67 +137,67 @@ def test_cosh():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = cosh(c*b)
+    f = fwd.cosh(c*b)
     assert(f.evaluation_at({a:3,b:2})==np.cosh(12))
     assert(f.derivative_at(c,{a:3,b:2})==np.sinh(12)*2)
     
 def test_tanh():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = tan(c*b)
+    f = fwd.tan(c*b)
     assert(f.evaluation_at({a:3,b:2})==np.sin(12)/np.cos(12))
     assert(f.derivative_at(c,{a:3,b:2})==1/np.cos(24)*2)
 
 def test_csch():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = csch(c*b)
+    f = fwd.csch(c*b)
     assert f.evaluation_at({a:3,b:2}) == 1/np.sinh(12)
     assert f.derivative_at(c,{a:3,b:2}) == \
      -(np.cosh(12)/np.sinh(12))*(1/np.sinh(12))*2
 
 def test_sech():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = sech(c*b)
+    f = fwd.sech(c*b)
     assert f.evaluation_at({a:2,b:1}) == 1/np.cosh(2)
     assert f.derivative_at(c,{a:2,b:1}) == \
      -(np.sinh(2)/np.cosh(2))*(1/np.cosh(2))*1
 
 def test_coth():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = coth(c*b)
+    f = fwd.coth(c*b)
     assert f.evaluation_at({a:3,b:2}) == np.cosh(12)/np.sinh(12)
     assert f.derivative_at(c,{a:3,b:2}) == -(1/np.sinh(12))**2*2
 
 def test_arcsin():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = arcsin(c*b)
+    f = fwd.arcsin(c*b)
     assert f.evaluation_at({a:0.2,b:0.5}) == np.arcsin(0.05)
     assert f.derivative_at(c,{a:0.2,b:0.5})== \
     (1/np.sqrt(1-(0.2*0.5*0.5)**2))*0.5
 
 def test_arccos():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = arccos(c*b)
+    f = fwd.arccos(c*b)
     assert f.evaluation_at({a:0.2,b:0.5})== np.arccos(0.05)
     assert f.derivative_at(c,{a:0.2,b:0.5}) == \
      (-1/np.sqrt(1-(0.2*0.5*0.5)**2))*0.5
 
 def test_arctan():
-    a = Variable()
-    b = Variable()
+    a = fwd.Variable()
+    b = fwd.Variable()
     c = a*b
-    f = arctan(c*b)
+    f = fwd.arctan(c*b)
     assert(f.evaluation_at({a:2,b:3}) == np.arctan(18))
     assert(f.derivative_at(c,{a:2,b:3}) == (1/(18**2+1))*3)
 
