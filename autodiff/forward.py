@@ -38,6 +38,10 @@ class Expression:
             return self._ele_func.derivative_at(
                 self._sub_expr1, self._sub_expr2, var, val_dict)
     
+    def __neg__(self):
+        return Expression(Neg, self)
+
+                
     def __add__(self, another):
         if isinstance(another, Expression):
             return Expression(Add, self, another)
@@ -45,6 +49,7 @@ class Expression:
         # the number then should be converted to a Constant
         else:
             return Expression(Add, self, Constant(another))
+    
     
     def __radd__(self, another):
         if isinstance(another, Expression):
@@ -63,7 +68,8 @@ class Expression:
             return Expression(Sub, another, self)
         else:
             return Expression(Sub, Constant(another), self)
-    
+        
+
     def __mul__(self, another):
         if isinstance(another, Expression):
             return Expression(Mul,self,another)
@@ -197,6 +203,15 @@ class Exp:
         return sub_expr1.derivative_at(var, val_dict) * \
                np.exp(sub_expr1.evaluation_at(val_dict))
 
+class Neg:
+    @staticmethod
+    def evaluation_at(sub_expr1, val_dict):
+        return -sub_expr1.evaluation_at(val_dict)
+    
+    @staticmethod
+    def derivative_at(sub_expr1, var, val_dict):
+        return -sub_expr1.derivative_at(var, val_dict)
+             
 
 def exp(expr):
     return Expression(Exp, expr)
