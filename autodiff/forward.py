@@ -215,3 +215,215 @@ class Neg:
 
 def exp(expr):
     return Expression(Exp, expr)
+
+
+class Sin:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return np.sin(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        return sub_expr1.derivative_at(var, val_dict) * \
+        np.cos(sub_expr1.evaluation_at(val_dict)) 
+
+def sin(expr):
+    return Expression(Sin, expr)
+
+class Cos:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return np.cos(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        return -sub_expr1.derivative_at(var, val_dict) * \
+               np.sin(sub_expr1.evaluation_at(val_dict)) 
+
+def cos(expr):
+    return Expression(Cos, expr)
+    
+class Tan:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return np.tan(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        return sub_expr1.derivative_at(var, val_dict) * \
+               (1/np.cos(2*sub_expr1.evaluation_at(val_dict)))
+
+def tan(expr):
+    return Expression(Tan, expr)
+    
+class Cotan:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return 1/np.tan(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):    
+        return -sub_expr1.derivative_at(var, val_dict) * \
+               (1/np.sin(sub_expr1.evaluation_at(val_dict))**2)
+
+def cotan(expr):
+    return Expression(Cotan, expr)
+    
+class Sec:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return 1/np.cos(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return sub_expr1.derivative_at(var, val_dict) * \
+               np.tan(x) * (1/np.cos(x))
+def sec(expr):
+    return Expression(Sec, expr) 
+
+class Csc:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return 1/np.sin(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return sub_expr1.derivative_at(var, val_dict) * \
+               (1/np.tan(x)) * (1/np.sin(x))
+
+def csc(expr):
+    return Expression(Csc, expr) 
+
+class Sinh:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return np.sinh(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return sub_expr1.derivative_at(var, val_dict) * np.cosh(x)
+
+def sinh(expr):
+    return Expression(Sinh, expr) 
+
+class Cosh:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        return np.cosh(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return sub_expr1.derivative_at(var, val_dict) * np.sinh(x)
+
+def cosh(expr):
+    return Expression(Cosh, expr) 
+    
+class Tanh:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return np.sinh(x)/np.cosh(x)
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return sub_expr1.derivative_at(var, val_dict) * (1/np.cosh(x)**2)
+
+def tanh(expr):
+    return Expression(Tanh,expr) 
+
+class Csch:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return 1/np.sinh(x)
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        # d = -csch(x)*cot(x)
+        d = -(1/np.sinh(x)) * (np.cosh(x)/np.sinh(x))
+        return sub_expr1.derivative_at(var, val_dict) * d
+
+def csch(expr):
+    return Expression(Csch, expr) 
+
+class Sech:
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return 1/np.cosh(x)
+    
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        # d = -sech(x)tanh(x)
+        d = -(1/np.cosh(x)) * (np.sinh(x)/np.cosh(x))
+        return sub_expr1.derivative_at(var, val_dict)*d
+
+def sech(expr):
+    return Expression(Sech, expr) 
+
+class Coth:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return np.cosh(x)/np.sinh(x)
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        # d = -csch^2(x)
+        return -sub_expr1.derivative_at(var, val_dict) * (1/np.sinh(x)**2)
+
+def coth(expr):
+    return Expression(Coth, expr)    
+
+class Arcsin:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return np.arcsin(x)
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        d = 1/np.sqrt(1-x**2)
+        #1/sqrt(1-x^2)
+        return sub_expr1.derivative_at(var, val_dict) * d
+
+def arcsin(expr):
+    return Expression(Arcsin, expr)
+    
+class Arccos:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return np.arccos(x)
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        d = 1/np.sqrt(1-x**2)
+        #-1/sqrt(1-x^2)
+        return -sub_expr1.derivative_at(var, val_dict) * d
+
+def arccos(expr):
+    return Expression(Arccos, expr)
+    
+class Arctan:
+    @staticmethod
+    def evaluation_at(sub_expr1,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        return np.arctan(x)
+    
+    @staticmethod
+    def derivative_at(sub_expr1,var,val_dict):
+        x = sub_expr1.evaluation_at(val_dict)
+        d = 1/(1+x**2)
+        # d =1/1-x^2
+        return sub_expr1.derivative_at(var, val_dict) * d
+
+def arctan(expr):
+    return Expression(Arctan, expr)
