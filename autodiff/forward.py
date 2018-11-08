@@ -40,7 +40,8 @@ class Expression:
     
     def __neg__(self):
         return Expression(Neg, self)
-    
+
+                
     def __add__(self, another):
         if isinstance(another, Expression):
             return Expression(Add, self, another)
@@ -48,6 +49,7 @@ class Expression:
         # the number then should be converted to a Constant
         else:
             return Expression(Add, self, Constant(another))
+    
     
     def __radd__(self, another):
         if isinstance(another, Expression):
@@ -66,7 +68,8 @@ class Expression:
             return Expression(Sub, another, self)
         else:
             return Expression(Sub, Constant(another), self)
-    
+        
+
     def __mul__(self, another):
         if isinstance(another, Expression):
             return Expression(Mul,self,another)
