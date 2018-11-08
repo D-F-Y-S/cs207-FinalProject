@@ -175,7 +175,7 @@ def test_coth():
     f = fwd.coth(c*b)
     tol = 1e-6
     assert np.abs(f.evaluation_at({a:3,b:2}) - np.cosh(12)/np.sinh(12)) < tol
-    assert f.derivative_at(c,{a:3,b:2}) == -(1/np.sinh(12))**2*2
+    assert np.abs(f.derivative_at(c,{a:3,b:2}) - (-(1/np.sinh(12))**2*2)) < tol
 
 def test_arcsin():
     a = fwd.Variable()
