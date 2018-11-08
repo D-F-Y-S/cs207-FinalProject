@@ -77,7 +77,7 @@ def test_sin():
     a = fwd.Variable()
     b = fwd.Variable()
     f = fwd.sin(a*b)
-    assert(f.derivative_at(a,{a:2,b:2}==np.cos(4)*2))
+    assert(f.derivative_at(a,{a:2,b:2}) ==np.cos(4)*2)
     assert(f.evaluation_at({a:1,b:2}) == np.sin(2))
 
 
@@ -146,7 +146,8 @@ def test_tanh():
     b = fwd.Variable()
     c = a*b
     f = fwd.tan(c*b)
-    assert(f.evaluation_at({a:3,b:2})==np.sin(12)/np.cos(12))
+    tol = 1e-6
+    assert np.abs(f.evaluation_at({a:3,b:2})-np.sin(12)/np.cos(12)) < tol
     assert(f.derivative_at(c,{a:3,b:2})==1/np.cos(24)*2)
 
 def test_csch():
@@ -172,7 +173,8 @@ def test_coth():
     b = fwd.Variable()
     c = a*b
     f = fwd.coth(c*b)
-    assert f.evaluation_at({a:3,b:2}) == np.cosh(12)/np.sinh(12)
+    tol = 1e-6
+    assert np.abs(f.evaluation_at({a:3,b:2}) - np.cosh(12)/np.sinh(12)) < tol
     assert f.derivative_at(c,{a:3,b:2}) == -(1/np.sinh(12))**2*2
 
 def test_arcsin():
