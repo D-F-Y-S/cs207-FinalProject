@@ -8,7 +8,7 @@ import autodiff.forward as fwd
 
 def test_negation():
     x=fwd.Variable()
-    assert x.evaluation_at(x, {x: 3.0}) == -3.0
+    assert x.evaluation_at({x: 3.0}) == -3.0
     assert x.derivative_at(x, {x: 3.0}) == -1.0
 
 def test_adding_constant():
