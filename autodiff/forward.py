@@ -175,23 +175,40 @@ class Div:
                 sub_expr2.evaluation_at(val_dict)/\
                 sub_expr2.evaluation_at(val_dict)
 
+#class Pow:
+#    
+#    @staticmethod
+#    def evaluation_at(sub_expr1, sub_expr2, val_dict):
+#        return sub_expr1.evaluation_at(val_dict) **\
+#               sub_expr2.evaluation_at(val_dict)
+#    @staticmethod
+#    #f(x)^g(x) * g‘(x)  * ln( f(x) )+ f(x)^( g(x)-1 ) * g(x) * f’(x) 
+#    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
+#        return  sub_expr1.evaluation_at(val_dict)** \
+#                sub_expr2.evaluation_at(val_dict)* \
+#                sub_expr2.derivative_at(var, val_dict)*\
+#                np.log(sub_expr1.evaluation_at(val_dict))+ \
+#                sub_expr1.evaluation_at(val_dict) **\
+#                (sub_expr2.evaluation_at(val_dict)-1)*\
+#                sub_expr2.evaluation_at(val_dict)*\
+#                sub_expr1.derivative_at(var, val_dict)
+
+# a simplified version: assuming sub_expr2 is a constant
 class Pow:
-    
+
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
-        return sub_expr1.evaluation_at(val_dict) **\
-               sub_expr2.evaluation_at(val_dict)
+        return np.power(sub_expr1.evaluation_at(val_dict), 
+                        sub_expr2.evaluation_at(val_dict))
+    
     @staticmethod
-    #f(x)^g(x) * g‘(x)  * ln( f(x) )+ f(x)^( g(x)-1 ) * g(x) * f’(x) 
     def derivative_at(sub_expr1, sub_expr2, var, val_dict):
-        return  sub_expr1.evaluation_at(val_dict)** \
-                sub_expr2.evaluation_at(val_dict)* \
-                sub_expr2.derivative_at(var, val_dict)*\
-                np.log(sub_expr1.evaluation_at(val_dict))+ \
-                sub_expr1.evaluation_at(val_dict) **\
-                (sub_expr2.evaluation_at(val_dict)-1)*\
-                sub_expr2.evaluation_at(val_dict)*\
-                sub_expr1.derivative_at(var, val_dict)
+        p = sub_expr2.evaluation_at(val_dict)
+        return p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
+               * sub_expr1.derivative_at(var, val_dict)
+
+def pow(expr1, expr2):
+    return Expression(Pow, expr1, expr2)
 
 class Exp:
     @staticmethod
