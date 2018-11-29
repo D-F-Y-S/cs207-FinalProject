@@ -229,7 +229,7 @@ def test_vectorfunction():
         for j in range(2):
             assert equals(jacobian_returned[i, j], jacobian_expected[i, j])
 
-def test_sin_2d():
+def test_sin_2ndord():
     # one variable
     x = fwd.Variable()
     f = fwd.sin(x)
@@ -239,3 +239,13 @@ def test_sin_2d():
     g = fwd.sin(x*y)
     assert equals(g.derivative_at(x, {x:1.0, y: 2.0}, order=2), 
                   -2.0**2 * np.sin(2.0))
+
+def test_pow_2ndord():
+    # one variable
+    x = fwd.Variable()
+    f = (x+1)**3
+    assert equals(f.derivative_at(x, {x: 2.0}, order=2), 18.0)
+    # two variables
+    x, y = fwd.Variable(), fwd.Variable()
+    g = (x+y)**3
+    assert equals(g.derivative_at(x, {x: 2.0, y: 1.0}, order=2), 18.0)
