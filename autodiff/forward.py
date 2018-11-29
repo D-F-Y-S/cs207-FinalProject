@@ -283,10 +283,16 @@ class Cos:
         return np.cos(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
-    def derivative_at(sub_expr1,var,val_dict):
-        if or
-        return -sub_expr1.derivative_at(var, val_dict) * \
-               np.sin(sub_expr1.evaluation_at(val_dict)) 
+    def derivative_at(sub_expr1,var,val_dict, order=1):
+        if   order == 1:
+            return -sub_expr1.derivative_at(var, val_dict, order) * \
+                   np.sin(sub_expr1.evaluation_at(val_dict)) 
+        elif order ==2:
+            return -np.cos(sub_expr1.evaluation_at(val_dict)) * \
+                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
+                   -np.sin(sub_expr1.evaluation_at(val_dict)) * \
+                   sub_expr1.derivative_at(var, val_dict, order=2)
+        else: raise NotImplementedError
 
 def cos(expr):
     return Expression(Cos, expr)
