@@ -129,6 +129,23 @@ class Constant(Expression):
         return 0.0
 
 
+class VectorFunction:
+    
+    def __init__(self, exprlist):
+        self._exprlist = exprlist.copy()
+    
+    def evaluation_at(self, val_dict):
+        return np.array([expr.evaluation_at(val_dict) 
+                        for expr in self._exprlist])
+    
+    def gradient_at(self, var, val_dict):
+        return np.array([f.derivative_at(var, val_dict) for f in self._exprlist])
+    
+    def jacobian_at(self, val_dict):
+        return np.array([[f.derivative_at(var, val_dict) for var in val_dict.keys()]
+                         for f in self._exprlist])
+
+
 class Add:
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
