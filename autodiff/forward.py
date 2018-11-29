@@ -202,13 +202,25 @@ class Div:
         return sub_expr1.evaluation_at(val_dict) /\
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
-        return  sub_expr1.derivative_at(var, val_dict) / \
-                sub_expr2.evaluation_at(val_dict)- \
-                sub_expr1.evaluation_at(val_dict) *\
-                sub_expr2.derivative_at(var, val_dict)/\
-                sub_expr2.evaluation_at(val_dict)/\
-                sub_expr2.evaluation_at(val_dict)
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        if order==1:
+            return  sub_expr1.derivative_at(var, val_dict) / \
+                    sub_expr2.evaluation_at(val_dict)- \
+                    sub_expr1.evaluation_at(val_dict) *\
+                    sub_expr2.derivative_at(var, val_dict)/\
+                    sub_expr2.evaluation_at(val_dict)**2
+        elif order==2:
+            return ((sub_expr1.derivative_at(var, val_dict,2)*\
+                    sub_expr2.evaluation_at(val_dict)-\
+                    sub_expr1.evaluation_at(val_dict)*\
+                    sub_expr2.derivative_at(var, val_dict,2))*sub_expr2.evaluation_at(val_dict)**2 -\
+                    2*(sub_expr1.derivative_at(var, val_dict,1)*\
+                    sub_expr2.evaluation_at(val_dict) -\
+                    sub_expr1.evaluation_at(val_dict)*\
+                    sub_expr2.derivative_at(var, val_dict,1))*\
+                    sub_expr2.evaluation_at(val_dict)*\
+                    sub_expr2.derivative_at(var, val_dict,1))/\
+                    sub_expr2.evaluation_at(val_dict)**4
 
 #class Pow:
 #    
