@@ -272,6 +272,7 @@ class Sin:
                    sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
                    np.cos(sub_expr1.evaluation_at(val_dict)) * \
                    sub_expr1.derivative_at(var, val_dict, order=2)
+        else: raise NotImplementedError
 
 def sin(expr):
     return Expression(Sin, expr)
@@ -283,6 +284,7 @@ class Cos:
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict):
+        if or
         return -sub_expr1.derivative_at(var, val_dict) * \
                np.sin(sub_expr1.evaluation_at(val_dict)) 
 
