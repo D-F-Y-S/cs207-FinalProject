@@ -2,12 +2,13 @@
 This file contains the tests for the forward mode auto differentiation. We may 
 want to separate the code into multiple files later.
 """
+
 import pytest
 import numpy as np
 import autodiff.forward as fwd
 
-def equals(a, b, TOL=1e-10):
-    return np.abs(a-b) <= TOL
+def equals(a, b, tol=1e-10):
+    return np.abs(a-b) <= tol
 
 def test_negation():
     x=fwd.Variable()
@@ -227,3 +228,14 @@ def test_vectorfunction():
     for i in range(2): 
         for j in range(2):
             assert equals(jacobian_returned[i, j], jacobian_expected[i, j])
+
+def test_sin_2d():
+    # one variable
+    x = fwd.Variable()
+    f = fwd.sin(x)
+    assert equals(f.derivative_at(x, {x: 1.0}, order=2), -np.sin(1.0))
+    # two variables
+    x, y = fwd.Variable(), fwd.Variable()
+    g = fwd.sin(x*y)
+    assert equals(g.derivative_at(x, {x:1.0, y: 2.0}, order=2), 
+                  -2.0**2 * np.sin(2.0))
