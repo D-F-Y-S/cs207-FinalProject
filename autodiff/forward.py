@@ -24,19 +24,22 @@ class Expression:
             return self._ele_func.evaluation_at(
                 self._sub_expr1, self._sub_expr2, val_dict)
     
-    def derivative_at(self, var, val_dict):
+    def derivative_at(self, var, val_dict, order=1):
         
-        if var is self: return 1.0
+        if var is self: 
+            if   order == 1: return 1.0
+            elif order == 2: return 0.0
+            else: raise NotImplementedError
         
         # sub_expr2 is None implies that _ele_func is an unary operator
         if self._sub_expr2 is None:
             return self._ele_func.derivative_at(
-                self._sub_expr1, var, val_dict)
+                self._sub_expr1, var, val_dict, order)
         
         # sub_expr2 not None implies that _ele_func is a binary operator
         else:
             return self._ele_func.derivative_at(
-                self._sub_expr1, self._sub_expr2, var, val_dict)
+                self._sub_expr1, self._sub_expr2, var, val_dict, order)
     
     def __neg__(self):
         return Expression(Neg, self)
@@ -114,8 +117,11 @@ class Variable(Expression):
     def evaluation_at(self, val_dict):
         return val_dict[self]
     
-    def derivative_at(self, var, val_dict):
-        return 1.0 if var is self else 0.0
+    def derivative_at(self, var, val_dict, order=1):
+        if order == 1:
+            return 1.0 if var is self else 0.0
+        else:
+            return 0.0
 
 
 class Constant(Expression):
@@ -125,7 +131,7 @@ class Constant(Expression):
     def evaluation_at(self, val_dict):
         return self.val
     
-    def derivative_at(self, var, val_dict):
+    def derivative_at(self, var, val_dict, order=1):
         return 0.0
 
 
@@ -253,13 +259,19 @@ def exp(expr):
 
 class Sin:
     @staticmethod
-    def evaluation_at(sub_expr1,val_dict):
+    def evaluation_at(sub_expr1, val_dict):
         return np.sin(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
-    def derivative_at(sub_expr1,var,val_dict):
-        return sub_expr1.derivative_at(var, val_dict) * \
-        np.cos(sub_expr1.evaluation_at(val_dict)) 
+    def derivative_at(sub_expr1, var, val_dict, order=1):
+        if   order == 1:
+            return sub_expr1.derivative_at(var, val_dict, order) * \
+            np.cos(sub_expr1.evaluation_at(val_dict))
+        elif order == 2:
+            return -np.sin(sub_expr1.evaluation_at(val_dict)) * \
+                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
+                   np.cos(sub_expr1.evaluation_at(val_dict)) * \
+                   sub_expr1.derivative_at(var, val_dict, order=2)
 
 def sin(expr):
     return Expression(Sin, expr)
