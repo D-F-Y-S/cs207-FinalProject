@@ -158,9 +158,12 @@ class Add:
         return sub_expr1.evaluation_at(val_dict) + \
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
-        return sub_expr1.derivative_at(var, val_dict) + \
-               sub_expr2.derivative_at(var, val_dict)
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        if order ==1: 
+            return sub_expr1.derivative_at(var,val_dict) + \
+               sub_expr2.derivative_at(var,val_dict)
+        elif order==2:
+            return sub_expr1.derivative_at(var,val_dict,2)+sub_expr2.derivative_at(var,val_dict,2)
 
 class Sub:
     @staticmethod
@@ -168,9 +171,12 @@ class Sub:
         return sub_expr1.evaluation_at(val_dict) - \
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
-        return sub_expr1.derivative_at(var, val_dict) - \
-               sub_expr2.derivative_at(var, val_dict)
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        if order ==1: 
+            return sub_expr1.derivative_at(var,val_dict) - \
+               sub_expr2.derivative_at(var,val_dict)
+        elif order==2:
+            return sub_expr1.derivative_at(var,val_dict,2)-sub_expr2.derivative_at(var,val_dict,2)
 
 class Mul:
     @staticmethod
@@ -178,11 +184,17 @@ class Mul:
         return sub_expr1.evaluation_at(val_dict) *\
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
-        return sub_expr1.derivative_at(var, val_dict) * \
-               sub_expr2.evaluation_at(val_dict)+ \
-               sub_expr1.evaluation_at(val_dict) *\
-               sub_expr2.derivative_at(var, val_dict)
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        if order ==1:
+            return sub_expr1.derivative_at(var, val_dict) * \
+                   sub_expr2.evaluation_at(val_dict)+ \
+                   sub_expr1.evaluation_at(val_dict) *\
+                   sub_expr2.derivative_at(var, val_dict)
+        elif order ==2:
+            return sub_expr1.derivative_at(var, val_dict,2)*sub_expr2.evaluation_at(val_dict)+\
+                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
+                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
+                   sub_expr1.evaluation_at(val_dict)*sub_expr2.derivative_at(var, val_dict,2)
                
 class Div:
     @staticmethod
@@ -225,10 +237,14 @@ class Pow:
                         sub_expr2.evaluation_at(val_dict))
     
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
         p = sub_expr2.evaluation_at(val_dict)
-        return p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
-               * sub_expr1.derivative_at(var, val_dict)
+        if order ==1:
+            return p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
+                   * sub_expr1.derivative_at(var, val_dict)
+        elif order==2:
+            return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)* sub_expr1.derivative_at(var, val_dict)\
+                    + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
 
 def pow(expr1, expr2):
     return Expression(Pow, expr1, expr2)
