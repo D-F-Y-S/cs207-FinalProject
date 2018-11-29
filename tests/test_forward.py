@@ -6,6 +6,9 @@ import pytest
 import numpy as np
 import autodiff.forward as fwd
 
+def equals(a, b, TOL=1e-10):
+    return np.abs(a-b) <= TOL
+
 def test_negation():
     x=fwd.Variable()
     f=-x
@@ -203,4 +206,26 @@ def test_arctan():
     assert(f.evaluation_at({a:2,b:3}) == np.arctan(18))
     assert(f.derivative_at(c,{a:2,b:3}) == (1/(18**2+1))*3)
 
-    
+def test_vectorfunction():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.sin(x) + fwd.cos(y)
+    g = x**2 - y**2
+    vector = fwd.VectorFunction([f, g])
+    # test evaluation_at
+    evaluation_returned = vector.evaluation_at({x: np.pi/6, y: np.pi/6})
+    evaluation_expected = np.array([np.sin(np.pi/6) + np.cos(np.pi/6),
+                                    (np.pi/6)**2    - (np.pi/6)**2])
+    for r, e in zip(evaluation_returned, evaluation_expected):
+        assert equals(r, e)
+    # test gradient_at
+    gradient_returned = vector.gradient_at(x, {x: np.pi/6, y: np.pi/6})
+    gradient_expected = np.array([np.cos(np.pi/6), np.pi/3])
+    for r, e in zip(gradient_returned, gradient_expected):
+        assert equals(r, e)
+    #test jacobian_at
+    jacobian_returned = vector.jacobian_at({x: np.pi/6, y: np.pi/6})
+    jacobian_expected = np.array([[np.cos(np.pi/6), -np.sin(np.pi/6)],
+                                  [np.pi/3,         -np.pi/3]])
+    for i in range(2): 
+        for j in range(2):
+            assert equals(jacobian_returned[i, j], jacobian_expected[i, j])
