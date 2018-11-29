@@ -142,8 +142,8 @@ class VectorFunction:
         return np.array([f.derivative_at(var, val_dict) for f in self._exprlist])
     
     def jacobian_at(self, val_dict):
-        return np.array([[f.derivative_at(var, val_dict) for var in val_dict.keys()]
-                         for f in self._exprlist])
+        return np.array([self.gradient_at(var, val_dict)
+                         for var in val_dict.keys()]).transpose()
 
 
 class Add:
