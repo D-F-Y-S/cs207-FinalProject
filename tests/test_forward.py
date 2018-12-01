@@ -249,3 +249,27 @@ def test_pow_2ndord():
     x, y = fwd.Variable(), fwd.Variable()
     g = (x+y)**3
     assert equals(g.derivative_at(x, {x: 2.0, y: 1.0}, order=2), 18.0)
+    
+def test_exp_2ndord():
+    # one variable
+    x = fwd.Variable()
+    f = fwd.exp(2.0*x + 3.0)
+    assert equals(f.derivative_at(x, {x: 1.5}, order=2), 4.0*np.exp(2.0*1.5+3.0))
+    # two variables
+    x, y = fwd.Variable(), fwd.Variable()
+    g = fwd.exp(2.0*x / y)
+    assert equals(g.derivative_at(x, {x: 1.5, y: 2.5}, order=2), 
+                  4.0*np.exp(2.0*1.5/2.5) / (2.5**2) )
+
+def test_tan_2ndord():
+    # one variable
+    x = fwd.Variable()
+    f = fwd.tan(2.0*x + 3.0)
+    assert equals( f.derivative_at(x, {x: 1.5}, order=2), 
+                   8.0*np.tan(2.0*1.5+3.0)/(np.cos(2.0*1.5+3.0))**2 )
+    # two variables
+    x, y = fwd.Variable(), fwd.Variable()
+    g = fwd.tan(2.0*x / y)
+    assert equals(g.derivative_at(x, {x: 1.5, y: 2.5}, order=2), 
+                  8.0*np.tan(2.0*1.5/2.5) / (np.cos(2.0*1.5/2.5)**2 * (2.5**2)) )
+    
