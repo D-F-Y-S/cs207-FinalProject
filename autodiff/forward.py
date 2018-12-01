@@ -26,12 +26,26 @@ class Expression:
     
     def derivative_at(self, var, val_dict, order=1):
         
+        # var being a tuple implies multivariate higher derivatives
+#        if type(var) is tuple:
+#            if len(var) != 2:
+#                raise NotImplementedError('only 2nd order derivatives implemented for multivariate derivatives')
+#            var1, var2 = var
+#            # sub_expr2 being None implies that _ele_func is an unary operator
+#            if self._sub_expr2 is None:
+#                return self._ele_func.derivative_at(
+#                    self._sub_expr1, var, val_dict, order) 
+#            # sub_expr2 not None implies that _ele_func is a binary operator
+#            else:
+#                return self._ele_func.derivative_at(
+#                    self._sub_expr1, self._sub_expr2, var, val_dict, order)
+            
+        
         if var is self: 
             if   order == 1: return 1.0
-            elif order == 2: return 0.0
-            else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+            else: return 0.0
         
-        # sub_expr2 is None implies that _ele_func is an unary operator
+        # sub_expr2 being None implies that _ele_func is an unary operator
         if self._sub_expr2 is None:
             return self._ele_func.derivative_at(
                 self._sub_expr1, var, val_dict, order)
