@@ -278,7 +278,8 @@ class Exp:
                    np.exp(sub_expr1.evaluation_at(val_dict))
         elif order == 2:
             # todo
-            return
+            return np.exp(sub_expr1.evaluation_at(val_dict)) * (sub_expr1.derivative_at(var, val_dict, order=1))**2 \
+                 + np.exp(sub_expr1.evaluation_at(val_dict)) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 class Neg:
