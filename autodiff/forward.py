@@ -300,8 +300,10 @@ class Pow:
                         * sub_expr1.derivative_at(var1, val_dict, order=1) \
                         * sub_expr1.derivative_at(var2, val_dict, order=1)
                 return term1 + term2
-            return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)*sub_expr1.derivative_at(var, val_dict)**2\
-                    + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
+            else:
+                return Pow.derivative_at(sub_expr1, sub_expr2, (var, var), val_dict, order=2)
+#            return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)*sub_expr1.derivative_at(var, val_dict)**2\
+#                    + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 #def pow(expr1, expr2):
