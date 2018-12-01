@@ -263,8 +263,8 @@ class Pow:
                     + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
-def pow(expr1, expr2):
-    return Expression(Pow, expr1, expr2)
+#def pow(expr1, expr2):
+#    return Expression(Pow, expr1, expr2)
 
 class Exp:
     @staticmethod
@@ -443,7 +443,7 @@ class Tanh:
     def derivative_at(sub_expr1,var,val_dict, order=1):
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
-            return sub_expr1.derivative_at(var, val_dict) * (1/np.cosh(x)**2)
+            return sub_expr1.derivative_at(var, val_dict) * (x/np.cosh(x)**2)
         else: raise NotImplementedError('higher order derivatives not implemented for tanh.')
 
 def tanh(expr):

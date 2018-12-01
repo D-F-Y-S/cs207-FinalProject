@@ -149,9 +149,9 @@ def test_tanh():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
-    f = fwd.tan(c*b)
-    assert equals(f.evaluation_at({a:3,b:2}),   np.sin(12)/np.cos(12))
-    assert equals(f.derivative_at(c,{a:3,b:2}), 1/np.cos(24)*2)
+    f = fwd.tanh(c)
+    assert equals(f.evaluation_at({a:3,b:2}),   np.tanh(6))
+    assert equals(f.derivative_at(c,{a:3,b:2}), 4*6.0/(np.exp(6) + np.exp(-6))**2 )
 
 def test_csch():
     a = fwd.Variable()
@@ -239,6 +239,23 @@ def test_sin_2ndord():
     g = fwd.sin(x*y)
     assert equals(g.derivative_at(x, {x:1.0, y: 2.0}, order=2), 
                   -2.0**2 * np.sin(2.0))
+    # test error raising
+    with pytest.raises(NotImplementedError):
+        g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
+
+def test_cos_2ndord():
+    # one variable
+    x = fwd.Variable()
+    f = fwd.cos(x)
+    assert equals(f.derivative_at(x, {x: 1.0}, order=2), -np.cos(1.0))
+    # two variables
+    x, y = fwd.Variable(), fwd.Variable()
+    g = fwd.cos(x*y)
+    assert equals(g.derivative_at(x, {x:1.0, y: 2.0}, order=2), 
+                  -2.0**2 * np.cos(2.0))
+    # test error raising
+    with pytest.raises(NotImplementedError):
+        g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
 
 def test_pow_2ndord():
     # one variable
@@ -249,6 +266,9 @@ def test_pow_2ndord():
     x, y = fwd.Variable(), fwd.Variable()
     g = (x+y)**3
     assert equals(g.derivative_at(x, {x: 2.0, y: 1.0}, order=2), 18.0)
+    # test error raising
+    with pytest.raises(NotImplementedError):
+        g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
     
 def test_exp_2ndord():
     # one variable
@@ -260,16 +280,76 @@ def test_exp_2ndord():
     g = fwd.exp(2.0*x / y)
     assert equals(g.derivative_at(x, {x: 1.5, y: 2.5}, order=2), 
                   4.0*np.exp(2.0*1.5/2.5) / (2.5**2) )
+    # test error raising
+    with pytest.raises(NotImplementedError):
+        g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
 
 def test_tan_2ndord():
     # one variable
     x = fwd.Variable()
-    f = fwd.tan(2.0*x + 3.0)
+    f = fwd.tan(2.0*x - 3.0)
     assert equals( f.derivative_at(x, {x: 1.5}, order=2), 
-                   8.0*np.tan(2.0*1.5+3.0)/(np.cos(2.0*1.5+3.0))**2 )
+                   8.0*np.tan(2.0*1.5-3.0)/(np.cos(2.0*1.5-3.0))**2 )
     # two variables
     x, y = fwd.Variable(), fwd.Variable()
     g = fwd.tan(2.0*x / y)
     assert equals(g.derivative_at(x, {x: 1.5, y: 2.5}, order=2), 
                   8.0*np.tan(2.0*1.5/2.5) / (np.cos(2.0*1.5/2.5)**2 * (2.5**2)) )
+    # test error raising
+    with pytest.raises(NotImplementedError):
+        g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
+
+def test_notimplemented():
+    x = fwd.Variable()
+    y = fwd.Variable()
+    
+    with pytest.raises(NotImplementedError):
+        f = x + y
+        f.derivative_at(x, {x:0.5, y:0.5}, order=3)
+    with pytest.raises(NotImplementedError):
+        f = x - y
+        f.derivative_at(x, {x:0.5, y:0.5}, order=3)
+    with pytest.raises(NotImplementedError):
+        f = x * y
+        f.derivative_at(x, {x:0.5, y:0.5}, order=3)
+    with pytest.raises(NotImplementedError):
+        f = x / y
+        f.derivative_at(x, {x:0.5, y:0.5}, order=3)
+    
+    with pytest.raises(NotImplementedError):
+        f = fwd.cotan(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.sec(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.csc(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.sinh(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.cosh(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.tanh(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.csch(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.sech(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.coth(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.arcsin(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.arccos(x)
+        f.derivative_at(x, {x:0.5}, order=2)
+    with pytest.raises(NotImplementedError):
+        f = fwd.arctan(x)
+        f.derivative_at(x, {x:0.5}, order=2)
     
