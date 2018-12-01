@@ -304,12 +304,6 @@ def test_notimplemented():
     y = fwd.Variable()
     
     with pytest.raises(NotImplementedError):
-        f = x + y
-        f.derivative_at(x, {x:0.5, y:0.5}, order=3)
-    with pytest.raises(NotImplementedError):
-        f = x - y
-        f.derivative_at(x, {x:0.5, y:0.5}, order=3)
-    with pytest.raises(NotImplementedError):
         f = x * y
         f.derivative_at(x, {x:0.5, y:0.5}, order=3)
     with pytest.raises(NotImplementedError):
@@ -352,4 +346,36 @@ def test_notimplemented():
     with pytest.raises(NotImplementedError):
         f = fwd.arctan(x)
         f.derivative_at(x, {x:0.5}, order=2)
+
+def test_pow_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = x**3 + y**3
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 0.0)
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 9.0)
+    assert equals(f.derivative_at((y, y), {x: 1.5, y:2.5}, order=2), 15.0)
+    f = (x-y)**3
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  -6.0*(1.5-2.5))
+
+def test_mul_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = x**2 * y**2
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at( x,     {x: 1.5, y:2.5}, order=2))    
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  4.0*1.5*2.5)
+
+def test_div_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = x**2 / y**2
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at( x,     {x: 1.5, y:2.5}, order=2))    
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  -4.0*1.5/2.5**3)
     

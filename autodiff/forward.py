@@ -198,10 +198,23 @@ class Mul:
                    sub_expr1.evaluation_at(val_dict) *\
                    sub_expr2.derivative_at(var, val_dict)
         elif order == 2:
-            return sub_expr1.derivative_at(var, val_dict,2)*sub_expr2.evaluation_at(val_dict)+\
-                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
-                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
-                   sub_expr1.evaluation_at(val_dict)*sub_expr2.derivative_at(var, val_dict,2)
+            if type(var) is tuple:
+                var1, var2 = var
+                term1 = sub_expr1.derivative_at(var, val_dict, order=2) \
+                        * sub_expr2.evaluation_at(val_dict)
+                term2 = sub_expr2.derivative_at(var, val_dict, order=2) \
+                        * sub_expr1.evaluation_at(val_dict)
+                term3 = sub_expr1.derivative_at(var1, val_dict, order=1) \
+                        * sub_expr2.derivative_at(var2, val_dict, order=1)
+                term4 = sub_expr2.derivative_at(var1, val_dict, order=1) \
+                        * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2 + term3 + term4
+            else:
+                return Mul.derivative_at(sub_expr1, sub_expr2, (var, var), val_dict, order=2)
+#            return sub_expr1.derivative_at(var, val_dict,2)*sub_expr2.evaluation_at(val_dict)+\
+#                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
+#                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
+#                   sub_expr1.evaluation_at(val_dict)*sub_expr2.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
                
 class Div:
@@ -218,17 +231,32 @@ class Div:
                     sub_expr2.derivative_at(var, val_dict)/\
                     sub_expr2.evaluation_at(val_dict)**2
         elif order == 2:
-            return ((sub_expr1.derivative_at(var, val_dict,2)*\
-                    sub_expr2.evaluation_at(val_dict)-\
-                    sub_expr1.evaluation_at(val_dict)*\
-                    sub_expr2.derivative_at(var, val_dict,2))*sub_expr2.evaluation_at(val_dict)**2 -\
-                    2*(sub_expr1.derivative_at(var, val_dict,1)*\
-                    sub_expr2.evaluation_at(val_dict) -\
-                    sub_expr1.evaluation_at(val_dict)*\
-                    sub_expr2.derivative_at(var, val_dict,1))*\
-                    sub_expr2.evaluation_at(val_dict)*\
-                    sub_expr2.derivative_at(var, val_dict,1))/\
-                    sub_expr2.evaluation_at(val_dict)**4
+            if type(var) is tuple:
+                var1, var2 = var
+                f = sub_expr1.evaluation_at(val_dict)
+                g = sub_expr2.evaluation_at(val_dict)
+                term1 =  1/g    * sub_expr2.derivative_at(var, val_dict, order=2)
+                term2 = -f/g**2 * sub_expr1.derivative_at(var, val_dict, order=2)
+                term3 = -1/g**2 * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                                * sub_expr2.derivative_at(var2, val_dict, order=1)
+                term4 = -1/g**2 * sub_expr1.derivative_at(var2, val_dict, order=1) \
+                                * sub_expr2.derivative_at(var1, val_dict, order=1)
+                term5 = 2*f/g**3 * sub_expr2.derivative_at(var1, val_dict, order=1) \
+                                 * sub_expr2.derivative_at(var2, val_dict, order=1)
+                return term1 + term2 + term3 + term4 + term5  
+            else:
+                return Div.derivative_at(sub_expr1, sub_expr2, (var, var), val_dict, order=2)
+#            return ((sub_expr1.derivative_at(var, val_dict,2)*\
+#                    sub_expr2.evaluation_at(val_dict)-\
+#                    sub_expr1.evaluation_at(val_dict)*\
+#                    sub_expr2.derivative_at(var, val_dict,2))*sub_expr2.evaluation_at(val_dict)**2 -\
+#                    2*(sub_expr1.derivative_at(var, val_dict,1)*\
+#                    sub_expr2.evaluation_at(val_dict) -\
+#                    sub_expr1.evaluation_at(val_dict)*\
+#                    sub_expr2.derivative_at(var, val_dict,1))*\
+#                    sub_expr2.evaluation_at(val_dict)*\
+#                    sub_expr2.derivative_at(var, val_dict,1))/\
+#                    sub_expr2.evaluation_at(val_dict)**4
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 #class Pow:
@@ -264,6 +292,14 @@ class Pow:
             return p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
                    * sub_expr1.derivative_at(var, val_dict)
         elif order == 2:
+            if type(var) is tuple:
+                var1, var2 = var
+                term1 = p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
+                        * sub_expr1.derivative_at((var1, var2), val_dict, order=2)
+                term2 = p*(p-1.0)*np.power(sub_expr1.evaluation_at(val_dict), p-2.0) \
+                        * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                        * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2
             return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)*sub_expr1.derivative_at(var, val_dict)**2\
                     + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
