@@ -39,8 +39,7 @@ class Expression:
 #            else:
 #                return self._ele_func.derivative_at(
 #                    self._sub_expr1, self._sub_expr2, var, val_dict, order)
-            
-        
+
         if var is self: 
             if   order == 1: return 1.0
             else: return 0.0
@@ -172,13 +171,9 @@ class Add:
         return sub_expr1.evaluation_at(val_dict) + \
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
-        if order ==1: 
-            return sub_expr1.derivative_at(var,val_dict) + \
-               sub_expr2.derivative_at(var,val_dict)
-        elif order==2:
-            return sub_expr1.derivative_at(var,val_dict,2)+sub_expr2.derivative_at(var,val_dict,2)
-        else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict, order=1):
+        return sub_expr1.derivative_at(var, val_dict, order) + \
+               sub_expr2.derivative_at(var, val_dict, order)
 
 class Sub:
     @staticmethod
@@ -186,13 +181,9 @@ class Sub:
         return sub_expr1.evaluation_at(val_dict) - \
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
-    def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
-        if order ==1: 
-            return sub_expr1.derivative_at(var,val_dict) - \
-               sub_expr2.derivative_at(var,val_dict)
-        elif order==2:
-            return sub_expr1.derivative_at(var,val_dict,2)-sub_expr2.derivative_at(var,val_dict,2)
-        else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+    def derivative_at(sub_expr1, sub_expr2, var, val_dict, order=1):
+        return sub_expr1.derivative_at(var, val_dict, order) - \
+               sub_expr2.derivative_at(var, val_dict, order)
 
 class Mul:
     @staticmethod
@@ -201,12 +192,12 @@ class Mul:
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
-        if order ==1:
+        if   order == 1:
             return sub_expr1.derivative_at(var, val_dict) * \
                    sub_expr2.evaluation_at(val_dict)+ \
                    sub_expr1.evaluation_at(val_dict) *\
                    sub_expr2.derivative_at(var, val_dict)
-        elif order ==2:
+        elif order == 2:
             return sub_expr1.derivative_at(var, val_dict,2)*sub_expr2.evaluation_at(val_dict)+\
                    sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
                    sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
@@ -220,13 +211,13 @@ class Div:
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
-        if order==1:
+        if   order == 1:
             return  sub_expr1.derivative_at(var, val_dict) / \
                     sub_expr2.evaluation_at(val_dict)- \
                     sub_expr1.evaluation_at(val_dict) *\
                     sub_expr2.derivative_at(var, val_dict)/\
                     sub_expr2.evaluation_at(val_dict)**2
-        elif order==2:
+        elif order == 2:
             return ((sub_expr1.derivative_at(var, val_dict,2)*\
                     sub_expr2.evaluation_at(val_dict)-\
                     sub_expr1.evaluation_at(val_dict)*\
@@ -269,10 +260,10 @@ class Pow:
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
         p = sub_expr2.evaluation_at(val_dict)
-        if order ==1:
+        if   order == 1:
             return p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
                    * sub_expr1.derivative_at(var, val_dict)
-        elif order==2:
+        elif order == 2:
             return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)*sub_expr1.derivative_at(var, val_dict)**2\
                     + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
