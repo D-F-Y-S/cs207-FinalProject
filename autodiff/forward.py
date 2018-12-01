@@ -347,7 +347,9 @@ class Tan:
                    (1/np.cos(2*sub_expr1.evaluation_at(val_dict)))
         elif order == 2:
             # todo
-            return
+            u = sub_expr1.evaluation_at(val_dict)
+            return 2*np.tan(u)/(np.cos(u)**2) * (sub_expr1.derivative_at(var, val_dict))**2 \
+                           + 1/(np.cos(u)**2) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 def tan(expr):
