@@ -378,4 +378,36 @@ def test_div_2ndord_2vars():
                   f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
                   -4.0*1.5/2.5**3)
+
+def test_sin_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.sin(x/y)
+    df_dxdy = lambda x, y: -(y*np.cos(x/y) - x*np.sin(x/y))/y**3
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at( x,     {x: 1.5, y:2.5}, order=2))    
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  df_dxdy(1.5, 2.5))
     
+def test_cos_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.cos(x/y)
+    df_dxdy = lambda x, y: (y*np.sin(x/y) + x*np.cos(x/y))/y**3
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at( x,     {x: 1.5, y:2.5}, order=2))    
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  df_dxdy(1.5, 2.5))
+
+def test_tan_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.tan(x/y)
+    df_dxdy = lambda x, y: -(y/np.cos(x/y)**2 + 2*x*np.tan(x/y)/np.cos(x/y)**2) / y**3
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2),
+                  f.derivative_at( x,     {x: 1.5, y:2.5}, order=2))    
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  df_dxdy(1.5, 2.5))

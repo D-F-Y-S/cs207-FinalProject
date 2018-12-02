@@ -349,10 +349,19 @@ class Sin:
             return sub_expr1.derivative_at(var, val_dict, order) * \
             np.cos(sub_expr1.evaluation_at(val_dict))
         elif order == 2:
-            return -np.sin(sub_expr1.evaluation_at(val_dict)) * \
-                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
-                   np.cos(sub_expr1.evaluation_at(val_dict)) * \
-                   sub_expr1.derivative_at(var, val_dict, order=2)
+            if type(var) is tuple:
+                var1, var2 = var
+                f = sub_expr1.evaluation_at(val_dict)
+                term1 =  np.cos(f) * sub_expr1.derivative_at(var,  val_dict, order=2)
+                term2 = -np.sin(f) * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                                   * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2
+            else:
+                return Sin.derivative_at(sub_expr1, (var,var), val_dict, order=2)
+#            return -np.sin(sub_expr1.evaluation_at(val_dict)) * \
+#                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
+#                   np.cos(sub_expr1.evaluation_at(val_dict)) * \
+#                   sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 def sin(expr):
@@ -369,10 +378,19 @@ class Cos:
             return -sub_expr1.derivative_at(var, val_dict, order) * \
                    np.sin(sub_expr1.evaluation_at(val_dict)) 
         elif order == 2:
-            return -np.cos(sub_expr1.evaluation_at(val_dict)) * \
-                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
-                   -np.sin(sub_expr1.evaluation_at(val_dict)) * \
-                   sub_expr1.derivative_at(var, val_dict, order=2)
+            if type(var) is tuple:
+                var1, var2 = var
+                f = sub_expr1.evaluation_at(val_dict)
+                term1 = -np.sin(f) * sub_expr1.derivative_at(var,  val_dict, order=2)
+                term2 = -np.cos(f) * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                                   * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2
+            else:
+                return Cos.derivative_at(sub_expr1, (var,var), val_dict, order=2)
+#            return -np.cos(sub_expr1.evaluation_at(val_dict)) * \
+#                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
+#                   -np.sin(sub_expr1.evaluation_at(val_dict)) * \
+#                   sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 def cos(expr):
@@ -389,10 +407,19 @@ class Tan:
             return sub_expr1.derivative_at(var, val_dict) * \
                    (1/np.cos(2*sub_expr1.evaluation_at(val_dict)))
         elif order == 2:
-            # todo
-            u = sub_expr1.evaluation_at(val_dict)
-            return 2*np.tan(u)/(np.cos(u)**2) * (sub_expr1.derivative_at(var, val_dict))**2 \
-                           + 1/(np.cos(u)**2) *  sub_expr1.derivative_at(var, val_dict, order=2)
+            if type(var) is tuple:
+                var1, var2 = var
+                f = sub_expr1.evaluation_at(val_dict)
+                term1 = 1/(np.cos(f)**2) * sub_expr1.derivative_at(var,  val_dict, order=2)
+                term2 = 2*np.tan(f)/(np.cos(f)**2) \
+                        * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                        * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2
+            else:
+                return Tan.derivative_at(sub_expr1, (var,var), val_dict, order=2)
+#            u = sub_expr1.evaluation_at(val_dict)
+#            return 2*np.tan(u)/(np.cos(u)**2) * (sub_expr1.derivative_at(var, val_dict))**2 \
+#                           + 1/(np.cos(u)**2) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 def tan(expr):
