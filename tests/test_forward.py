@@ -422,3 +422,16 @@ def test_exp_2ndord_2vars():
                   f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
                   df_dxdy(1.5, 2.5))
+
+def test_hessian():
+    x, y = fwd.Variable(), fwd.Variable()
+    rosen = 100.0*(y - x**2)**2 + (1 - x)**2.0
+    rosen_hessian = lambda x, y: \
+        np.array([[1200*x**2-400*x+2, -400*x],
+                  [-400*x,             200]])
+    rosen_hessian_returned = rosen.hessian_at({x: 1.0, y: 1.0})
+    rosen_hessian_expected = rosen_hessian(1.0, 1.0)
+    for i in range(2):
+        for j in range(2):
+            assert equals(rosen_hessian_returned[i, j],
+                          rosen_hessian_expected[i, j])

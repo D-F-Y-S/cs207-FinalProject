@@ -54,6 +54,13 @@ class Expression:
             return self._ele_func.derivative_at(
                 self._sub_expr1, self._sub_expr2, var, val_dict, order)
     
+    def hessian_at(self, val_dict):
+        return np.array( [ \
+                          [self.derivative_at((var1, var2), val_dict, order=2)
+                           for var1 in val_dict.keys()]
+                          for var2 in val_dict.keys() \
+                          ] )
+    
     def __neg__(self):
         return Expression(Neg, self)
 
