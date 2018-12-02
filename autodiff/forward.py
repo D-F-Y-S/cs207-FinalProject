@@ -320,9 +320,17 @@ class Exp:
             return sub_expr1.derivative_at(var, val_dict) * \
                    np.exp(sub_expr1.evaluation_at(val_dict))
         elif order == 2:
-            # todo
-            return np.exp(sub_expr1.evaluation_at(val_dict)) * (sub_expr1.derivative_at(var, val_dict, order=1))**2 \
-                 + np.exp(sub_expr1.evaluation_at(val_dict)) *  sub_expr1.derivative_at(var, val_dict, order=2)
+            if type(var) is tuple:
+                var1, var2 = var
+                f = sub_expr1.evaluation_at(val_dict)
+                term1 = np.exp(f) * sub_expr1.derivative_at(var,  val_dict, order=2)
+                term2 = np.exp(f) * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                                  * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2
+            else:
+                return Exp.derivative_at(sub_expr1, (var,var), val_dict, order=2)
+#            return np.exp(sub_expr1.evaluation_at(val_dict)) * (sub_expr1.derivative_at(var, val_dict, order=1))**2 \
+#                 + np.exp(sub_expr1.evaluation_at(val_dict)) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
 
 class Neg:

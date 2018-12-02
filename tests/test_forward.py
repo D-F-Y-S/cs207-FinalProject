@@ -411,3 +411,14 @@ def test_tan_2ndord_2vars():
                   f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
                   df_dxdy(1.5, 2.5))
+
+def test_exp_2ndord_2vars():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.exp(x/y)
+    df_dxdy = lambda x, y: -(x*np.exp(x/y) + y*np.exp(x/y)) / y**3
+    assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2),
+                  f.derivative_at( x,     {x: 1.5, y:2.5}, order=2))    
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  f.derivative_at((y, x), {x: 1.5, y:2.5}, order=2))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 
+                  df_dxdy(1.5, 2.5))
