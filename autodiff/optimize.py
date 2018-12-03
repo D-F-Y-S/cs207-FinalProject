@@ -35,12 +35,13 @@ def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
     return {var: val for var, val in zip(variables, curr_point)}
 
 
-def newton(f,  init_val_dict, max_iter=1000, stop_stepsize=1e-8):
+def newton(f,  init_val_dict, max_iter=1000, stop_stepsize=1e-8,return_history=False):
     
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
     f_grad = f.gradient_at(init_val_dict)
     f_hess = f.hessian_at(init_val_dict)
+    history = [curr_point.tolist()]
     
     for i in range(max_iter):
         
@@ -54,16 +55,20 @@ def newton(f,  init_val_dict, max_iter=1000, stop_stepsize=1e-8):
         
         # x := x + s
         curr_point = curr_point + step
+        history.append(curr_point.tolist())
     
+    if return_history:
+        return history
+
     return {var: val for var, val in zip(variables, curr_point)}
 
 
 
-def gradient_descent(f,init_val_dict, learning_rate=0.1, max_iter=1000, stop_stepsize=0.000001):
+def gradient_descent(f,init_val_dict, learning_rate=0.001, max_iter=1000, stop_stepsize=0.000001,return_history=False):
     f_grad = f.gradient_at(init_val_dict)
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
-    
+    history = [curr_point.tolist()]
     
     for i in range(max_iter):
         
@@ -72,7 +77,10 @@ def gradient_descent(f,init_val_dict, learning_rate=0.1, max_iter=1000, stop_ste
         f_grad =f.gradient_at(prev_val_dict)
 
         curr_point =curr_point - learning_rate*f_grad
+        history.append(curr_point.tolist())
         if np.linalg.norm(curr_point-prev_point, ord=2) < stop_stepsize: break
         
-    
+    if return_history:
+        return history
+
     return {var: val for var, val in zip(variables, curr_point)}
