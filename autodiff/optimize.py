@@ -59,7 +59,7 @@ def newton(f,  init_val_dict, max_iter=1000, stop_stepsize=1e-8):
 
 
 
-def gradient_descent(f,init_val_dict, learning_rate=0.1, max_iter=1000, stop_stepsize=1e-6):
+def gradient_descent(f,init_val_dict, learning_rate=0.1, max_iter=1000, stop_stepsize=0.000001):
     f_grad = f.gradient_at(init_val_dict)
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
@@ -76,11 +76,3 @@ def gradient_descent(f,init_val_dict, learning_rate=0.1, max_iter=1000, stop_ste
         
     
     return {var: val for var, val in zip(variables, curr_point)}
-
-
-
-while previous_step_size > precision and iters < max_iters:
-    prev_x = cur_x
-    cur_x -= gamma * df(prev_x)
-    previous_step_size = abs(cur_x - prev_x)
-    iters+=1
