@@ -26,8 +26,8 @@ def test_bfgs():
 
 def test_gradient_descent():
     x, y = fwd.Variable(), fwd.Variable()
-    rosen = 100.0*(y - x**2)**2 + (1 - x)**2.0
-    gradient_descent_returned = opt.gradient_descent(rosen, {x: 0.0, y: 1.0})
+    f= x**2-2*x+1+y**2
+    gradient_descent_returned = opt.gradient_descent(rosen, {x: -1.0, y: 2.0})
     assert gradient_descent(newton_returned[x], 1.0, tol=1e-3)
-    assert gradient_descent(newton_returned[y], 1.0, tol=1e-3)
+    assert gradient_descent(newton_returned[y], 0.0, tol=1e-3)
     
