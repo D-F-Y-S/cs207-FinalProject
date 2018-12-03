@@ -435,3 +435,15 @@ def test_hessian():
         for j in range(2):
             assert equals(rosen_hessian_returned[i, j],
                           rosen_hessian_expected[i, j])
+
+def test_gradient():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.sin(x) + fwd.cos(y)
+    f_gradient_at = lambda x, y: np.array([np.cos(x), -np.sin(y)])
+    gradient_expected = f_gradient_at(1.5, 2.5)
+    gradient_returned = f.gradient_at({x: 1.5, y: 2.5})
+    for i in range(2):
+        assert equals(gradient_expected[i], gradient_returned[i])
+    gradient_returned = f.gradient_at({x: 1.5, y: 2.5}, returns_dict=True)
+    assert equals(gradient_returned[x], gradient_expected[0])
+    assert equals(gradient_returned[y], gradient_expected[1])

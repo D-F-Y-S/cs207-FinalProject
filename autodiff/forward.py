@@ -54,6 +54,12 @@ class Expression:
             return self._ele_func.derivative_at(
                 self._sub_expr1, self._sub_expr2, var, val_dict, order)
     
+    def gradient_at(self, val_dict, returns_dict=False):
+        if returns_dict:
+            return {v: self.derivative_at(v, val_dict) for v in val_dict.keys()}
+        return np.array([self.derivative_at(var, val_dict, order=1) 
+                         for var in val_dict.keys()])
+    
     def hessian_at(self, val_dict):
         return np.array( [ \
                           [self.derivative_at((var1, var2), val_dict, order=2)
