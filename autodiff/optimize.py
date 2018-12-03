@@ -33,3 +33,80 @@ def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
         B = B + deltaB
     
     return {var: val for var, val in zip(variables, curr_point)}
+
+
+import numpy as np
+def newton(f,  init_val_dict, max_iter=2000, stop_stepsize=1e-8, keep_history=False):
+    
+    var_dict = init_val_dict.keys()
+    f_grad = f.gradient_at(init_val_dict)
+    f_hess = f.hessian_at(init_val_dict)
+    curr_point = init_val_dict
+    history    = [nit_val_dict]
+    
+    for i in range(max_iter):
+        
+        # solve (Hessian of f at x)s = - (gradient of f at x)
+        step = np.linalg.solve(f_hess(curr_point), -f_grad(curr_point))
+        if norm(step, ord=2) < stop_stepsize: break
+        
+        # x := x + s
+        curr_point = curr_point + step
+        if keep_history: history.append(curr_point)
+    
+    return curr_point, history
+
+
+
+# def gradient_descent(f,init_val_dict, lambda_dict, step=0.001, maxsteps=0, precision=0.001):
+#     costs = []
+#     m = y.size # number of data points
+
+#     lambda1 = lambda1_init
+#     lambda2 = lambda2_init
+#     history1 = [] # to store all thetas
+#     history2 = []
+
+#     counter = 0
+#     oldcost = 0
+
+#     currentcost = np.sum(0.000045*lambda2**2*y - 0.000098*lambda1**2*x +\
+#                   0.003926*lambda1*x*np.exp((y**2 - x**2)*(lambda1**2 + lambda2**2)))
+
+#     costs.append(currentcost)
+
+#     history1.append(lambda1)
+#     history2.append(lambda2)
+#     counter+=1
+#     while abs(currentcost - oldcost) > precision:
+#         oldcost = currentcost
+#         #gradient = x.T.dot(error)/m
+
+#         start = timer()
+#         gradient1 = np.sum(-2 * 0.000098 * lambda1 * x +\
+#                     0.003926 * x * (np.exp((y**2 - x**2) * (lambda1**2 + lambda2**2)) +\
+#                     2 * lambda1**2 * np.exp((y**2 - x**2)*(lambda1**2 + lambda2**2)) * (y**2 - x**2)))
+#         gradient2 = np.sum(2 * 0.000045 * lambda2 * y +\
+#                     0.007852 * lambda2 * np.exp((y**2 - x**2)*(lambda1**2 + lambda2**2)) * lambda1 * x * (y**2 - x**2))
+
+#         lambda1 = lambda1 - step * gradient1
+#         lambda2 = lambda2 - step * gradient2
+
+#         end = timer()
+
+#         avg_time.append(end - start)
+
+#         history1.append(lambda1)
+#         history2.append(lambda2)
+
+#         currentcost = np.sum(0.000045*lambda2**2*y - 0.000098*lambda1**2*x +\
+#                   0.003926*lambda1*x*np.exp((y**2 - x**2)*(lambda1**2 + lambda2**2)))
+#         costs.append(currentcost)
+
+#         #if counter % 25 == 0: preds.append(pred)
+#         counter += 1
+#         if maxsteps:
+#             if counter == maxsteps:
+#                 break
+
+#     return history1, history2, costs, counter
