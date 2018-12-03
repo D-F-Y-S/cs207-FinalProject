@@ -1,6 +1,5 @@
 import autodiff.optimize as opt
 import matplotlib.pyplot as plt
-%matplotlib inline
 def plot_contour(f, init_val_dict, plot_range=[-3,3],method = 'gradient_descent'):
     if method == 'gradient_descent':
         a=opt.gradient_descent(f, init_val_dict,return_history=True)
@@ -25,6 +24,7 @@ def plot_contour(f, init_val_dict, plot_range=[-3,3],method = 'gradient_descent'
         y_gd.append(l[0])
         #f_gd.append(f.evaluation_at({x:l[0],y:l[1]}))
     plt.plot(x_gd,y_gd,'.',alpha=0.1)
+    plt.show()
 
 '''Example
 x,y = Variable(),Variable()
