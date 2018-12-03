@@ -35,26 +35,30 @@ def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
     return {var: val for var, val in zip(variables, curr_point)}
 
 
-import numpy as np
-def newton(f,  init_val_dict, max_iter=2000, stop_stepsize=1e-8, keep_history=False):
+def newton(f,  init_val_dict, max_iter=10, stop_stepsize=1e-8):
     
-    var_dict = init_val_dict.keys()
+    variables  = [var for var in init_val_dict.keys()]
+    curr_point = np.array([v for k, v in init_val_dict.items()])
     f_grad = f.gradient_at(init_val_dict)
     f_hess = f.hessian_at(init_val_dict)
-    curr_point = init_val_dict
-    history    = [nit_val_dict]
     
     for i in range(max_iter):
         
+        curr_val_dict = {var: val for var, val in zip(variables, curr_point)}
         # solve (Hessian of f at x)s = - (gradient of f at x)
-        step = np.linalg.solve(f_hess(curr_point), -f_grad(curr_point))
-        if norm(step, ord=2) < stop_stepsize: break
+        f_grad =f.gradient_at(curr_val_dict)
+        f_hess = f.hessian_at(curr_val_dict)
+
+        step = np.linalg.solve(f_hess, -f_grad)
+        if np.linalg.norm(step, ord=2) < stop_stepsize: break
         
         # x := x + s
         curr_point = curr_point + step
-        if keep_history: history.append(curr_point)
     
-    return curr_point, history
+    return {var: val for var, val in zip(variables, curr_point)}
+
+
+
 
 
 
