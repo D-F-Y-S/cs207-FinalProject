@@ -102,7 +102,7 @@ def test_tan():
     c = a*b
     f = fwd.tan(c*b)
     assert equals(f.evaluation_at({a:1,b:2}),   np.tan(4))
-    assert equals(f.derivative_at(c,{a:1,b:2}), 2*(1/np.cos(4*2)))
+    assert equals(f.derivative_at(c,{a:1,b:2}), 2*(1/np.cos(4))**2)
     
 def test_cotan():
     a = fwd.Variable()
@@ -121,12 +121,13 @@ def test_sec():
     assert equals(f.derivative_at(c,{a:1,b:2}), np.tan(4)*(1/np.cos(4))*2)
     
 def test_csc():
+    # -csc x cot x 
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
     f = fwd.csc(c*b)
     assert equals(f.evaluation_at({a:1,b:2}),   1/np.sin(4))
-    assert equals(f.derivative_at(c,{a:1,b:2}), (1/np.tan(4))*(1/np.sin(4))*2)
+    assert equals(f.derivative_at(c,{a:1,b:2}), -(1/np.tan(4))*(1/np.sin(4))*2)
 
 def test_sinh():
     a = fwd.Variable()
@@ -151,7 +152,7 @@ def test_tanh():
     c = a*b
     f = fwd.tanh(c)
     assert equals(f.evaluation_at({a:3,b:2}),   np.tanh(6))
-    assert equals(f.derivative_at(c,{a:3,b:2}), 4*6.0/(np.exp(6) + np.exp(-6))**2 )
+    assert equals(f.derivative_at(c,{a:3,b:2}), 1-np.tanh(6)**2)
 
 def test_csch():
     a = fwd.Variable()
@@ -160,13 +161,14 @@ def test_csch():
     f = fwd.csch(c*b)
     assert equals(f.evaluation_at({a:3,b:2}),   1/np.sinh(12))
     assert equals(f.derivative_at(c,{a:3,b:2}), \
-                  -(np.cosh(12)/np.sinh(12))*(1/np.sinh(12))*2)
+                  -2*np.cosh(12)/np.sinh(12)/np.sinh(12))
 
 def test_sech():
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
     f = fwd.sech(c*b)
+    # - tanh x sech x 
     assert equals(f.evaluation_at({a:2,b:1}),   1/np.cosh(2))
     assert equals(f.derivative_at(c,{a:2,b:1}), \
                   -(np.sinh(2)/np.cosh(2))*(1/np.cosh(2))*1)
