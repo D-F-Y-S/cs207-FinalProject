@@ -11,6 +11,8 @@ class Expression:
         self._ele_func  = ele_func
         self._sub_expr1 = sub_expr1
         self._sub_expr2 = sub_expr2
+        self.val = None
+        self.bder=0
     
     def evaluation_at(self, val_dict):
         
@@ -54,6 +56,16 @@ class Expression:
             return self._ele_func.derivative_at(
                 self._sub_expr1, self._sub_expr2, var, val_dict, order)
     
+    def back_derivative(self,var,val_dict):
+        if var is self: return 1.0
+        if self._sub_expr2 is None:
+            return self._ele_func.backderivative_at(self._sub_expr1,var)
+        else:
+            return self._ele_func.backderivative_at(self._sub_expr1,
+                                                    self._sub_expr2,var)    
+
+
+
     def gradient_at(self, val_dict, returns_dict=False):
         if returns_dict:
             return {v: self.derivative_at(v, val_dict) for v in val_dict.keys()}
@@ -138,6 +150,8 @@ class Expression:
 
 class Variable(Expression):
     def __init__(self):
+        self.val = None
+        self.bder = 0
         return
     
     def evaluation_at(self, val_dict):
@@ -187,6 +201,9 @@ class Add:
     def derivative_at(sub_expr1, sub_expr2, var, val_dict, order=1):
         return sub_expr1.derivative_at(var, val_dict, order) + \
                sub_expr2.derivative_at(var, val_dict, order)
+    @staticmethod
+    def backderivative_at(sub_expr1,sub_expr2,var):
+        return 1
 
 class Sub:
     @staticmethod
@@ -197,6 +214,12 @@ class Sub:
     def derivative_at(sub_expr1, sub_expr2, var, val_dict, order=1):
         return sub_expr1.derivative_at(var, val_dict, order) - \
                sub_expr2.derivative_at(var, val_dict, order)
+    @staticmethod
+    def backderivative_at(sub_expr1,sub_expr2,var):
+        if var == sub_expr1:
+            return 1
+        if var == sub_expr2:
+            return -1 
 
 class Mul:
     @staticmethod
@@ -229,6 +252,12 @@ class Mul:
 #                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
 #                   sub_expr1.evaluation_at(val_dict)*sub_expr2.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+    @staticmethod
+    def backderivative_at(sub_expr1,sub_expr2,var):
+        if var == sub_expr1:
+            return sub_expr2.val
+        else:
+            return sub_expr1.val
                
 class Div:
     @staticmethod
@@ -271,7 +300,12 @@ class Div:
 #                    sub_expr2.derivative_at(var, val_dict,1))/\
 #                    sub_expr2.evaluation_at(val_dict)**4
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
-
+    @staticmethod
+    def backderivative_at(sub_expr1,sub_expr2,var):
+        if var == sub_expr1:
+            return 1/sub_expr2.val
+        elif var == sub_expr2:
+            return -sub_expr1.val/sub_expr2/sub_expr2
 #class Pow:
 #    
 #    @staticmethod
@@ -318,7 +352,10 @@ class Pow:
 #            return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)*sub_expr1.derivative_at(var, val_dict)**2\
 #                    + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
-
+    @staticmethod
+    def backderivative_at(sub_expr1,sub_expr2,var):
+        p = sub_expr2.evaluation_at(val_dict)
+        return p*np.power(sub_expr1.val, p-1.0)
 #def pow(expr1, expr2):
 #    return Expression(Pow, expr1, expr2)
 
@@ -345,7 +382,10 @@ class Exp:
 #            return np.exp(sub_expr1.evaluation_at(val_dict)) * (sub_expr1.derivative_at(var, val_dict, order=1))**2 \
 #                 + np.exp(sub_expr1.evaluation_at(val_dict)) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
-
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        return sub_expr1.val
+        
 class Neg:
     @staticmethod
     def evaluation_at(sub_expr1, val_dict):
@@ -354,7 +394,9 @@ class Neg:
     @staticmethod
     def derivative_at(sub_expr1, var, val_dict, order=1):
         return -sub_expr1.derivative_at(var, val_dict, order)
-
+    @staticmethod
+    def back_derivative(sub_expr1,var):
+        return -1
 def exp(expr):
     return Expression(Exp, expr)
 
@@ -367,8 +409,8 @@ class Sin:
     @staticmethod
     def derivative_at(sub_expr1, var, val_dict, order=1):
         if   order == 1:
-            return sub_expr1.derivative_at(var, val_dict, order) * \
-            np.cos(sub_expr1.evaluation_at(val_dict))
+            return sub_expr1.derivative_at(var, val_dict) * \
+        np.cos(sub_expr1.evaluation_at(val_dict))
         elif order == 2:
             if type(var) is tuple:
                 var1, var2 = var
@@ -384,7 +426,10 @@ class Sin:
 #                   np.cos(sub_expr1.evaluation_at(val_dict)) * \
 #                   sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
-
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        return np.cos(sub_expr1.val)
+        
 def sin(expr):
     return Expression(Sin, expr)
 
@@ -413,7 +458,10 @@ class Cos:
 #                   -np.sin(sub_expr1.evaluation_at(val_dict)) * \
 #                   sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
-
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        return -np.sin(sub_expr1.val)
+        
 def cos(expr):
     return Expression(Cos, expr)
     
@@ -425,8 +473,7 @@ class Tan:
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
         if   order == 1:
-            return sub_expr1.derivative_at(var, val_dict) * \
-                   (1/np.cos(2*sub_expr1.evaluation_at(val_dict)))
+            return sub_expr1.derivative_at(var, val_dict) /(np.cos(sub_expr1.evaluation_at(val_dict))**2)
         elif order == 2:
             if type(var) is tuple:
                 var1, var2 = var
@@ -442,6 +489,9 @@ class Tan:
 #            return 2*np.tan(u)/(np.cos(u)**2) * (sub_expr1.derivative_at(var, val_dict))**2 \
 #                           + 1/(np.cos(u)**2) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        return 1/(np.cos(sub_expr1.val)**2)
 
 def tan(expr):
     return Expression(Tan, expr)
@@ -454,8 +504,7 @@ class Cotan:
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1): 
         if order == 1:
-            return -sub_expr1.derivative_at(var, val_dict) * \
-                   (1/np.sin(sub_expr1.evaluation_at(val_dict))**2)
+            return -sub_expr1.derivative_at(var, val_dict)/(np.sin(sub_expr1.evaluation_at(val_dict))**2)
         else: raise NotImplementedError('higher order derivatives not implemented for cotan.')
             
 
@@ -472,8 +521,12 @@ class Sec:
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * \
-                   np.tan(x) * (1/np.cos(x))
+               np.tan(x) * (1/np.cos(x))
         else: raise NotImplementedError('higher order derivatives not implemented for sec.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x =sub_expr1.val
+        return np.tan(x)/np.cos(x)
         
 def sec(expr):
     return Expression(Sec, expr) 
@@ -487,9 +540,13 @@ class Csc:
     def derivative_at(sub_expr1,var,val_dict, order=1):
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
-            return sub_expr1.derivative_at(var, val_dict) * \
-                   (1/np.tan(x)) * (1/np.sin(x))
+            return -sub_expr1.derivative_at(var, val_dict) * \
+               (1/np.tan(x)) * (1/np.sin(x))
         else: raise NotImplementedError('higher order derivatives not implemented for csc.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return -(1/np.tan(x)) * (1/np.sin(x))
 
 def csc(expr):
     return Expression(Csc, expr) 
@@ -505,6 +562,10 @@ class Sinh:
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * np.cosh(x)
         else: raise NotImplementedError('higher order derivatives not implemented for sinh.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return np.cosh(x)
 
 def sinh(expr):
     return Expression(Sinh, expr) 
@@ -520,6 +581,9 @@ class Cosh:
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * np.sinh(x)
         else: raise NotImplementedError('higher order derivatives not implemented for cosh.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        return np.sinh(sub_expr1.val)
 
 def cosh(expr):
     return Expression(Cosh, expr) 
@@ -534,8 +598,13 @@ class Tanh:
     def derivative_at(sub_expr1,var,val_dict, order=1):
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
-            return sub_expr1.derivative_at(var, val_dict) * (x/np.cosh(x)**2)
+            return sub_expr1.derivative_at(var, val_dict) * (1-tanh*tanh)
         else: raise NotImplementedError('higher order derivatives not implemented for tanh.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        tanh = np.sinh(x)/np.cosh(x)
+        return 1-tanh*tanh
 
 def tanh(expr):
     return Expression(Tanh,expr) 
@@ -553,6 +622,10 @@ class Csch:
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * d
         else: raise NotImplementedError('higher order derivatives not implemented for csch.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return -(np.cosh(x)/np.sinh(x))*(1/np.sinh(x))
 
 def csch(expr):
     return Expression(Csch, expr) 
@@ -569,6 +642,10 @@ class Sech:
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict)*d
         else: raise NotImplementedError('higher order derivatives not implemented for sech.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return -(1/np.cosh(x)) * (np.sinh(x)/np.cosh(x))
 
 def sech(expr):
     return Expression(Sech, expr) 
@@ -581,11 +658,17 @@ class Coth:
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
-        x = sub_expr1.evaluation_at(val_dict)
-        # d = -csch^2(x)
+`       x = sub_expr1.evaluation_at(val_dict)
+        coth = np.cosh(x)/np.sinh(x)
+
         if order == 1:
-            return -sub_expr1.derivative_at(var, val_dict) * (1/np.sinh(x)**2)
+            return sub_expr1.derivative_at(var, val_dict) * (1-coth**2)
         else: raise NotImplementedError('higher order derivatives not implemented for cotan.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        coth = np.cosh(x)/np.sinh(x)            
+        return 1-coth**2
 
 def coth(expr):
     return Expression(Coth, expr)    
@@ -604,6 +687,10 @@ class Arcsin:
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * d
         else: raise NotImplementedError('higher order derivatives not implemented for arcsin.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return 1/np.sqrt(1-x**2)
 
 def arcsin(expr):
     return Expression(Arcsin, expr)
@@ -622,6 +709,10 @@ class Arccos:
         if order == 1:
             return -sub_expr1.derivative_at(var, val_dict) * d
         else: raise NotImplementedError('higher order derivatives not implemented for arccos.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return -1/np.sqrt(1-x**2)
 
 def arccos(expr):
     return Expression(Arccos, expr)
@@ -636,10 +727,14 @@ class Arctan:
     def derivative_at(sub_expr1,var,val_dict, order=1):
         x = sub_expr1.evaluation_at(val_dict)
         d = 1/(1+x**2)
-        # d =1/1-x^2
+        # d = 1/(1+x**2)
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * d
         else: raise NotImplementedError('higher order derivatives not implemented for arctan.')
+    @staticmethod
+    def backderivative_at(sub_expr1,var):
+        x = sub_expr1.val
+        return 1/(1+x**2)
 
 def arctan(expr):
     return Expression(Arctan, expr)
