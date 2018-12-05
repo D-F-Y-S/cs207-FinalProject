@@ -508,9 +508,7 @@ class Cotan:
         else: raise NotImplementedError('higher order derivatives not implemented for cotan.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
-        x = sub_expr1.val
-        coth = np.cosh(x)/np.sinh(x)            
-        return 1-coth**2            
+        return -1/(np.sin(sub_expr1.val)**2)          
 
 def cotan(expr):
     return Expression(Cotan, expr)
