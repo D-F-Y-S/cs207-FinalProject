@@ -1,4 +1,4 @@
-import forward
+import autodiff.forward
 
 def forward_pass(y,val_dict):
     # forward pass, store values
