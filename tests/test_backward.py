@@ -1,5 +1,6 @@
 from test_forward import equals
 import autodiff.forward as fw
+import autodiff.backprop as bp
 
 def test_backward():
     a = fw.Variable()
@@ -9,7 +10,7 @@ def test_backward():
     e = c*d
     f = a+e
     val_dict = {b:1,a:2,d:4}
-    back_propagation(f,val_dict)
+    bp.back_propagation(f,val_dict)
     var_list = [a,b,c,d,e,f]
     for i in var_list:
         assert(equals(i.bder == f.derivative_at(i,val_dict)))
@@ -20,7 +21,7 @@ def test_backward():
     c = fw.cos(e)
     d = a+c
     val_dict = {b:1,a:2}
-    back_propagation(d,val_dict)
+    bp.back_propagation(d,val_dict)
     var_list = [a,b,c,d]
     for i in var_list:
         assert(equals(i.bder == d.derivative_at(i,val_dict)))
@@ -34,7 +35,7 @@ def test_backward():
     f = fw.cotan(d)
     g = fw.sinh(f-e)
     val_dict = {b:1,a:2}
-    back_propagation(g,val_dict)
+    bp.back_propagation(g,val_dict)
     var_list = [a,b,c,d,e,f,g]
     for i in var_list:
         assert(equals(i.bder == g.derivative_at(i,val_dict)))
