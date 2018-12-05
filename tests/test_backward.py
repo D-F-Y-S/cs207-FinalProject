@@ -1,7 +1,7 @@
 from test_forward import equals
 import autodiff.forward as fw
 import autodiff.backprop as bp
-
+import pytest
 def test_backward():
     a = fw.Variable()
     b = fw.Variable()
@@ -39,4 +39,5 @@ def test_backward():
     var_list = [a,b,c,d,e,f,g]
     for i in var_list:
         assert(equals(i.bder == g.derivative_at(i,val_dict)))
-   
+
+test_backward()   
