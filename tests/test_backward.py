@@ -1,5 +1,5 @@
 from test_forward import equals
-import forward
+import autodiff.forward
 
 def test_backward():
     a= Variable()
