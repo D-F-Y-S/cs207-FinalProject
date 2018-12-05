@@ -8,7 +8,7 @@ def forward_pass(y,val_dict):
             forward_pass(y._sub_expr1,val_dict)
         if y._sub_expr2!=None:
             forward_pass(y._sub_expr2,val_dict)
-    elif isinstance(y,Variable):
+    elif isinstance(y,fwd.Variable):
         y.val = val_dict[y]
     return 
 
@@ -21,12 +21,12 @@ def initialize(top,y):
 def backward(y,val_dict,depth = 0):
     # val_dict stores the basic variables
     # (atomic,cannot be further decomposed)
-    if type(y)== fwd.Expression:
+    if type(y) == fwd.Expression:
         if y._sub_expr1 != None:
             y._sub_expr1.bder += y.bder*y.back_derivative(y._sub_expr1,val_dict)
             backward(y._sub_expr1,val_dict,depth+1)
-        if y._sub_expr2 !=None:
-            y._sub_expr2.bder+=y.bder*y.back_derivative(y._sub_expr2,val_dict)
+        if y._sub_expr2 != None:
+            y._sub_expr2.bder += y.bder*y.back_derivative(y._sub_expr2,val_dict)
             backward(y._sub_expr2,val_dict,depth+1)
     return 
 
