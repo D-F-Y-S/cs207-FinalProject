@@ -1,4 +1,4 @@
-from test_foward import equals
+from test_forward import equals
 import forward
 
 def test_backward():
