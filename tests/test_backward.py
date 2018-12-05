@@ -13,7 +13,7 @@ def test_backward():
     bp.back_propagation(f,val_dict)
     var_list = [a,b,c,d,e,f]
     for i in var_list:
-        assert(equals(i.bder == f.derivative_at(i,val_dict)))
+        assert(equals(i.bder, f.derivative_at(i,val_dict)))
     
     a = fw.Variable()
     b = fw.Variable()
@@ -24,7 +24,7 @@ def test_backward():
     bp.back_propagation(d,val_dict)
     var_list = [a,b,c,d]
     for i in var_list:
-        assert(equals(i.bder == d.derivative_at(i,val_dict)))
+        assert(equals(i.bder, d.derivative_at(i,val_dict)))
         
     
     a = fw.Variable()
@@ -38,6 +38,6 @@ def test_backward():
     bp.back_propagation(g,val_dict)
     var_list = [a,b,c,d,e,f,g]
     for i in var_list:
-        assert(equals(i.bder == g.derivative_at(i,val_dict)))
+        assert(equals(i.bder, g.derivative_at(i,val_dict)))
 
-test_backward()   
+
