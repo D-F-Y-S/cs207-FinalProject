@@ -1,11 +1,11 @@
 from test_forward import equals
-import autodiff.forward
+import autodiff.forward as fw
 
 def test_backward():
-    a= Variable()
-    b = Variable()
+    a = fw.Variable()
+    b = fw.Variable()
     c = a+b
-    d = Variable()
+    d = fw.Variable()
     e = c*d
     f = a+e
     val_dict = {b:1,a:2,d:4}
@@ -14,10 +14,10 @@ def test_backward():
     for i in var_list:
         assert(equals(i.bder == f.derivative_at(i,val_dict)))
     
-    a = Variable()
-    b = Variable()
+    a = fw.Variable()
+    b = fw.Variable()
     e = b-a
-    c = cos(e)
+    c = fw.cos(e)
     d = a+c
     val_dict = {b:1,a:2}
     back_propagation(d,val_dict)
@@ -26,13 +26,13 @@ def test_backward():
         assert(equals(i.bder == d.derivative_at(i,val_dict)))
         
     
-    a = Variable()
-    b = Variable()
-    c = csc(a)
-    d = sec(a)
-    e = tan(c)
-    f = cotan(d)
-    g = sinh(f-e)
+    a = fw.Variable()
+    b = fw.Variable()
+    c = fw.csc(a)
+    d = fw.sec(a)
+    e = fw.tan(c)
+    f = fw.cotan(d)
+    g = fw.sinh(f-e)
     val_dict = {b:1,a:2}
     back_propagation(g,val_dict)
     var_list = [a,b,c,d,e,f,g]
