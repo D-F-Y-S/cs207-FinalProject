@@ -597,6 +597,7 @@ class Tanh:
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
         x = sub_expr1.evaluation_at(val_dict)
+        tanh = np.sinh(x)/np.cos(x)
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * (1-tanh*tanh)
         else: raise NotImplementedError('higher order derivatives not implemented for tanh.')
