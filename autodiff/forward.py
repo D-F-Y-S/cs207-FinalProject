@@ -167,6 +167,7 @@ class Variable(Expression):
 class Constant(Expression):
     def __init__(self, val):
         self.val = val
+ 
         
     def evaluation_at(self, val_dict):
         return self.val
@@ -354,7 +355,7 @@ class Pow:
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
-        p = sub_expr2.evaluation_at(val_dict)
+        p = sub_expr2.val
         return p*np.power(sub_expr1.val, p-1.0)
 #def pow(expr1, expr2):
 #    return Expression(Pow, expr1, expr2)
