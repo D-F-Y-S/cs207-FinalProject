@@ -146,7 +146,19 @@ class Expression:
             return Expression(Pow,another,self)
         else:
             return Expression(Pow, Constant(another),self)
-
+    
+    def __eq__(self, another):
+        if not isinstance(another, Expression):
+            return False
+        return self._ele_func == another._ele_func \
+               and self._sub_expr1 == another._sub_expr1 \
+               and self._sub_expr2 == another._sub_expr2
+               
+    def __ne__(self, another):
+        return ~self.__eq__(another)
+    
+    def __hash__(self):
+        return object.__hash__(self)   
 
 class Variable(Expression):
     def __init__(self):
@@ -162,18 +174,35 @@ class Variable(Expression):
             return 1.0 if var is self else 0.0
         else:
             return 0.0
-
+    
+    def __eq__(self, another):
+        return another is self
+    
+    def __ne__(self, another):
+        return ~self.__eq__(another)
+    
+    def __hash__(self):
+        return Expression.__hash__(self) 
 
 class Constant(Expression):
     def __init__(self, val):
         self.val = val
  
-        
     def evaluation_at(self, val_dict):
         return self.val
     
     def derivative_at(self, var, val_dict, order=1):
         return 0.0
+    
+    def __eq__(self, another):
+        if isinstance(another, Constant): return True
+        else:                             return False
+    
+    def __ne__(self, another):
+        return ~self.__eq__(another)
+    
+    def __hash__(self):
+        return Expression.__hash__(self) 
 
 
 class VectorFunction:
