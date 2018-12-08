@@ -468,4 +468,16 @@ def test_sqrt():
     assert equals(f.derivative_at(x, {x: 1.5, y:2.5}), dfdx(1.5, 2.5))
     assert equals(f.derivative_at(y, {x: 1.5, y:2.5}), dfdy(1.5, 2.5))
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
+
+def test_log():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.log(fwd.sin(x)+y**2)
+    dfdx = lambda x, y: np.cos(x) / (np.sin(x)+y**2)
+    dfdy = lambda x, y: 2*y / (np.sin(x)+y**2)
+    d2fdxdy = lambda x, y: -2*y*np.cos(x) / (np.sin(x)+y**2)**2
+    assert equals(f.evaluation_at({x: 1.5, y:2.5}), np.log(np.sin(1.5)+2.5**2))
+    assert equals(f.derivative_at(x, {x: 1.5, y:2.5}), dfdx(1.5, 2.5))
+    assert equals(f.derivative_at(y, {x: 1.5, y:2.5}), dfdy(1.5, 2.5))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
+    
     
