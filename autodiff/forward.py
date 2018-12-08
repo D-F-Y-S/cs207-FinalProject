@@ -1382,3 +1382,9 @@ class Arctan:
 
 def arctan(expr):
     return Expression(Arctan, expr)
+
+def logit(expr):
+    return log(expr/(1-expr))
+
+def sigmoid(expr):
+    return 1/(1+exp(-expr))
