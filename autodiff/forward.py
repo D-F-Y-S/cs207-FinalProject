@@ -146,6 +146,7 @@ class Expression:
             return Expression(Pow, Constant(another),self)
     
     def __eq__(self, another):
+        """ Overwrite dunder method for ="""
         if not isinstance(another, Expression):
             return False
         return self._ele_func == another._ele_func \
@@ -507,7 +508,7 @@ class Cos:
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
         """
-        Evaluate sub_expr1 with inputs of variable values from val_dict.
+        Compute cos of sub_expr1 with inputs of variable values from val_dict.
     
         INPUTS
         =======
@@ -515,7 +516,7 @@ class Cos:
         
         RETURNS
         ========
-        value of sub_expr1
+        cos sub_expr1
         """
         return np.cos(sub_expr1.evaluation_at(val_dict))
     
@@ -547,10 +548,6 @@ class Cos:
                 return term1 + term2
             else:
                 return Cos.derivative_at(sub_expr1, (var,var), val_dict, order=2)
-#            return -np.cos(sub_expr1.evaluation_at(val_dict)) * \
-#                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
-#                   -np.sin(sub_expr1.evaluation_at(val_dict)) * \
-#                   sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
@@ -578,7 +575,7 @@ class Tan:
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
         """
-        Evaluate sub_expr1 with inputs of variable values from val_dict.
+        Compute tan of sub_expr1 with inputs of variable values from val_dict.
     
         INPUTS
         =======
@@ -586,12 +583,25 @@ class Tan:
         
         RETURNS
         ========
-        value of sub_expr1
+        tan sub_expr1
         """
         return np.tan(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if   order == 1:
             return sub_expr1.derivative_at(var, val_dict) /(np.cos(sub_expr1.evaluation_at(val_dict))**2)
         elif order == 2:
@@ -605,41 +615,117 @@ class Tan:
                 return term1 + term2
             else:
                 return Tan.derivative_at(sub_expr1, (var,var), val_dict, order=2)
-#            u = sub_expr1.evaluation_at(val_dict)
-#            return 2*np.tan(u)/(np.cos(u)**2) * (sub_expr1.derivative_at(var, val_dict))**2 \
-#                           + 1/(np.cos(u)**2) *  sub_expr1.derivative_at(var, val_dict, order=2)
+
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return 1/(np.cos(sub_expr1.val)**2)
 
 def tan(expr):
     return Expression(Tan, expr)
     
 class Cotan:
+    """ 
+    This is a class to wrap up static method related to cotan operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute cotan of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        cotan sub_expr1
+        """
         return 1/np.tan(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1): 
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if order == 1:
             return -sub_expr1.derivative_at(var, val_dict)/(np.sin(sub_expr1.evaluation_at(val_dict))**2)
         else: raise NotImplementedError('higher order derivatives not implemented for cotan.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return -1/(np.sin(sub_expr1.val)**2)          
 
 def cotan(expr):
     return Expression(Cotan, expr)
     
 class Sec:
+    """ 
+    This is a class to wrap up static method related to sec operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute sec of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sec sub_expr1
+        """
         return 1/np.cos(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * \
@@ -647,6 +733,18 @@ class Sec:
         else: raise NotImplementedError('higher order derivatives not implemented for sec.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x =sub_expr1.val
         return np.tan(x)/np.cos(x)
         
@@ -654,12 +752,39 @@ def sec(expr):
     return Expression(Sec, expr) 
 
 class Csc:
+    """ 
+    This is a class to wrap up static method related to csc operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute csc of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        csc sub_expr1
+        """
         return 1/np.sin(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
             return -sub_expr1.derivative_at(var, val_dict) * \
@@ -667,6 +792,18 @@ class Csc:
         else: raise NotImplementedError('higher order derivatives not implemented for csc.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return -(1/np.tan(x)) * (1/np.sin(x))
 
@@ -674,18 +811,57 @@ def csc(expr):
     return Expression(Csc, expr) 
 
 class Sinh:
+    """ 
+    This is a class to wrap up static method related to sinh operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute sinh of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sinh sub_expr1
+        """
         return np.sinh(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * np.cosh(x)
         else: raise NotImplementedError('higher order derivatives not implemented for sinh.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return np.cosh(x)
 
@@ -693,31 +869,97 @@ def sinh(expr):
     return Expression(Sinh, expr) 
 
 class Cosh:
+    """ 
+    This is a class to wrap up static method related to cosh operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute cosh of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        cosh sub_expr1
+        """
         return np.cosh(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         if order == 1:
             return sub_expr1.derivative_at(var, val_dict) * np.sinh(x)
         else: raise NotImplementedError('higher order derivatives not implemented for cosh.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return np.sinh(sub_expr1.val)
 
 def cosh(expr):
     return Expression(Cosh, expr) 
     
 class Tanh:
+    """ 
+    This is a class to wrap up static method related to tanh operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute tanh of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        tanh sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return np.sinh(x)/np.cosh(x)
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         tanh = np.sinh(x)/np.cosh(x)
         if order == 1:
@@ -725,6 +967,18 @@ class Tanh:
         else: raise NotImplementedError('higher order derivatives not implemented for tanh.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         tanh = np.sinh(x)/np.cosh(x)
         return 1-tanh*tanh
@@ -733,12 +987,39 @@ def tanh(expr):
     return Expression(Tanh,expr) 
 
 class Csch:
+    """ 
+    This is a class to wrap up static method related to csch operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute csch of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        csch sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return 1/np.sinh(x)
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         # d = -csch(x)*cot(x)
         d = -(1/np.sinh(x)) * (np.cosh(x)/np.sinh(x))
@@ -747,6 +1028,18 @@ class Csch:
         else: raise NotImplementedError('higher order derivatives not implemented for csch.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return -(np.cosh(x)/np.sinh(x))*(1/np.sinh(x))
 
@@ -754,11 +1047,38 @@ def csch(expr):
     return Expression(Csch, expr) 
 
 class Sech:
+    """ 
+    This is a class to wrap up static method related to sech operation
+    """
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute sech of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sech sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return 1/np.cosh(x)
     
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         # d = -sech(x)tanh(x)
         d = -(1/np.cosh(x)) * (np.sinh(x)/np.cosh(x))
@@ -767,6 +1087,18 @@ class Sech:
         else: raise NotImplementedError('higher order derivatives not implemented for sech.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return -(1/np.cosh(x)) * (np.sinh(x)/np.cosh(x))
 
@@ -774,13 +1106,40 @@ def sech(expr):
     return Expression(Sech, expr) 
 
 class Coth:
+    """ 
+    This is a class to wrap up static method related to coth operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute coth of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        coth sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return np.cosh(x)/np.sinh(x)
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         coth = np.cosh(x)/np.sinh(x)
 
@@ -789,6 +1148,18 @@ class Coth:
         else: raise NotImplementedError('higher order derivatives not implemented for cotan.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         coth = np.cosh(x)/np.sinh(x)            
         return 1-coth**2
@@ -797,13 +1168,40 @@ def coth(expr):
     return Expression(Coth, expr)    
 
 class Arcsin:
+    """ 
+    This is a class to wrap up static method related to arcsin operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute arcsin of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        arcsin sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return np.arcsin(x)
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         d = 1/np.sqrt(1-x**2)
         #1/sqrt(1-x^2)
@@ -812,6 +1210,18 @@ class Arcsin:
         else: raise NotImplementedError('higher order derivatives not implemented for arcsin.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return 1/np.sqrt(1-x**2)
 
@@ -819,13 +1229,40 @@ def arcsin(expr):
     return Expression(Arcsin, expr)
     
 class Arccos:
+    """ 
+    This is a class to wrap up static method related to arccos operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute arccos of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        arccos sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return np.arccos(x)
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         d = 1/np.sqrt(1-x**2)
         #-1/sqrt(1-x^2)
@@ -834,6 +1271,18 @@ class Arccos:
         else: raise NotImplementedError('higher order derivatives not implemented for arccos.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return -1/np.sqrt(1-x**2)
 
@@ -841,13 +1290,40 @@ def arccos(expr):
     return Expression(Arccos, expr)
     
 class Arctan:
+    """ 
+    This is a class to wrap up static method related to arctan operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Compute arctan of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        arctan sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         return np.arctan(x)
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.evaluation_at(val_dict)
         d = 1/(1+x**2)
         # d = 1/(1+x**2)
@@ -856,6 +1332,18 @@ class Arctan:
         else: raise NotImplementedError('higher order derivatives not implemented for arctan.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         x = sub_expr1.val
         return 1/(1+x**2)
 
