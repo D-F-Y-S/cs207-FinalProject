@@ -26,6 +26,8 @@ class Expression:
                 self._sub_expr1, self._sub_expr2, val_dict)
     
     def derivative_at(self, var, val_dict, order=1):
+        
+        if type(var) is tuple: order=len(var)
 
         if var is self: 
             if   order == 1: return 1.0
@@ -393,6 +395,11 @@ class Pow:
         p = sub_expr2.val
         return p*np.power(sub_expr1.val, p-1.0)
 
+def power(expr, p):
+    return Expression(Pow, expr, Constant(p))
+def sqrt(expr):
+    return Expression(Pow, expr, Constant(0.5))
+
 
 class Exp:
     @staticmethod
@@ -418,6 +425,34 @@ class Exp:
     @staticmethod
     def backderivative_at(sub_expr1,var):
         return sub_expr1.val
+    
+def exp(expr):
+    return Expression(Exp, expr)
+
+class Log:
+    
+    @staticmethod
+    def evaluation_at(sub_expr1, val_dict):
+        return np.log(sub_expr1.evaluation_at(val_dict))
+    
+    @staticmethod
+    def derivative_at(sub_expr1, var, val_dict, order=1):
+        if   order == 1:
+            return 1 / sub_expr1.evaluation_at(val_dict) * sub_expr1.derivative_at(var, val_dict)
+        elif order == 2:
+            if type(var) is tuple:
+                var1, var2 = var
+                f = sub_expr1.evaluation_at(val_dict)
+                term1 = 1/f * sub_expr1.derivative_at(var,  val_dict, order=2)
+                term2 = -1/f**2 * sub_expr1.derivative_at(var1, val_dict, order=1) \
+                            * sub_expr1.derivative_at(var2, val_dict, order=1)
+                return term1 + term2
+            else:
+                return Log.derivative_at(sub_expr1, (var,var), val_dict, order=2)
+        else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+
+def log(expr):
+    return Expression(Log, expr)
         
 class Neg:
     @staticmethod
@@ -430,8 +465,6 @@ class Neg:
     @staticmethod
     def back_derivative(sub_expr1,var):
         return -1
-def exp(expr):
-    return Expression(Exp, expr)
 
 
 class Sin:
@@ -1349,3 +1382,9 @@ class Arctan:
 
 def arctan(expr):
     return Expression(Arctan, expr)
+
+def logit(expr):
+    return log(expr/(1-expr))
+
+def sigmoid(expr):
+    return 1/(1+exp(-expr))

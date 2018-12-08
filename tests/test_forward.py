@@ -457,3 +457,41 @@ def test_eq():
     h = fwd.sin(y) + fwd.cos(x)
     assert f == g
     assert f != h
+
+def test_sqrt():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.sqrt(fwd.sin(x) + fwd.cos(y))
+    dfdx = lambda x, y:  np.cos(x) / (2*np.sqrt(np.sin(x)+np.cos(y)))
+    dfdy = lambda x, y: -np.sin(y) / (2*np.sqrt(np.sin(x)+np.cos(y)))
+    d2fdxdy = lambda x, y: np.cos(x)*np.sin(y) / (4*(np.sin(x) + np.cos(y))**1.5)
+    assert equals(f.evaluation_at({x: 1.5, y:2.5}), np.sqrt(np.sin(1.5)+np.cos(2.5)))
+    assert equals(f.derivative_at(x, {x: 1.5, y:2.5}), dfdx(1.5, 2.5))
+    assert equals(f.derivative_at(y, {x: 1.5, y:2.5}), dfdy(1.5, 2.5))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
+
+def test_log():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.log(fwd.sin(x)+y**2)
+    dfdx = lambda x, y: np.cos(x) / (np.sin(x)+y**2)
+    dfdy = lambda x, y: 2*y / (np.sin(x)+y**2)
+    d2fdxdy = lambda x, y: -2*y*np.cos(x) / (np.sin(x)+y**2)**2
+    assert equals(f.evaluation_at({x: 1.5, y:2.5}), np.log(np.sin(1.5)+2.5**2))
+    assert equals(f.derivative_at(x, {x: 1.5, y:2.5}), dfdx(1.5, 2.5))
+    assert equals(f.derivative_at(y, {x: 1.5, y:2.5}), dfdy(1.5, 2.5))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
+    
+def test_logit():
+    x = fwd.Variable()
+    f = fwd.logit(x)
+    f_exact = lambda x: np.log(x/(1-x))
+    dfdx = lambda x: 1/(x*(1-x))
+    assert equals(f.evaluation_at({x: 0.8}), f_exact(0.8))
+    assert equals(f.derivative_at(x, {x: 0.8}), dfdx(0.8))
+
+def test_sigmoid():
+    x = fwd.Variable()
+    f = fwd.sigmoid(x)
+    f_exact = lambda x: 1/(1+np.exp(-x))
+    dfdx = lambda x: f_exact(x)*(1-f_exact(x))
+    assert equals(f.evaluation_at({x: 0.8}), f_exact(0.8))
+    assert equals(f.derivative_at(x, {x: 0.8}), dfdx(0.8))
