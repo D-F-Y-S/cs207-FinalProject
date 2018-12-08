@@ -1,7 +1,6 @@
 """
 This file contains the central data structure and functions related to the
-forward mode auto differentiation. We may want to separate the code into 
-multiple files later.
+forward mode auto differentiation. 
 """
 
 import numpy as np
@@ -27,20 +26,6 @@ class Expression:
                 self._sub_expr1, self._sub_expr2, val_dict)
     
     def derivative_at(self, var, val_dict, order=1):
-        
-        # var being a tuple implies multivariate higher derivatives
-#        if type(var) is tuple:
-#            if len(var) != 2:
-#                raise NotImplementedError('only 2nd order derivatives implemented for multivariate derivatives')
-#            var1, var2 = var
-#            # sub_expr2 being None implies that _ele_func is an unary operator
-#            if self._sub_expr2 is None:
-#                return self._ele_func.derivative_at(
-#                    self._sub_expr1, var, val_dict, order) 
-#            # sub_expr2 not None implies that _ele_func is a binary operator
-#            else:
-#                return self._ele_func.derivative_at(
-#                    self._sub_expr1, self._sub_expr2, var, val_dict, order)
 
         if var is self: 
             if   order == 1: return 1.0
@@ -57,6 +42,19 @@ class Expression:
                 self._sub_expr1, self._sub_expr2, var, val_dict, order)
     
     def back_derivative(self,var,val_dict):
+        """
+        Returns the derivative of var with resepct to its immediate parent.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values. Variables
+        in val_dict are of atomic feature and cannot be further decomposed.
+        var: variable with respect to which the function calculates derivative   
+        
+        RETURNS
+        ========
+        derivative of var with respect to the immediate parent that contain var
+        """
         if var is self: return 1.0
         if self._sub_expr2 is None:
             return self._ele_func.backderivative_at(self._sub_expr1,var)
@@ -206,18 +204,60 @@ class Constant(Expression):
 
 
 class VectorFunction:
-    
+    """ 
+    This is a class for applying operations to a vector of variables. 
+      
+    Attributes: 
+        _exprlist: a list of expressions with respect to which the operations
+    are applied 
+    """
     def __init__(self, exprlist):
+        """ 
+        The constructor for VectorFunction class. 
+        Parameters: 
+           exprlist: a list of expressions with respect to which the class 
+        functions are applied to  
+        """
         self._exprlist = exprlist.copy()
     
     def evaluation_at(self, val_dict):
+        """ 
+        The function to apply evaluation_at to a vector of expressions. 
+  
+        Parameters: 
+            val_dict: a dictionary containing variable name and values.
+        
+        Returns: 
+            a numpy array containing value of expressions in the self._exprlist. 
+        """
         return np.array([expr.evaluation_at(val_dict) 
                         for expr in self._exprlist])
     
     def gradient_at(self, var, val_dict):
+        """ 
+        The function to apply derivative_at to a vector of expressions. 
+  
+        Parameters: 
+            val_dict: a dictionary containing variable name and values.
+            var: variable whose derivative is the result of this function
+        Returns: 
+            a numpy array containing first derivative of expressions in 
+            self._exprlist with respect to var. 
+        """
         return np.array([f.derivative_at(var, val_dict) for f in self._exprlist])
     
     def jacobian_at(self, val_dict):
+        """ 
+        The function to calculate jacobian with respect to atomic variables in 
+        val_dict. 
+  
+        Parameters: 
+            val_dict: a dictionary containing variable name and values.
+        
+        Returns: 
+            a 2-D numpy array containing derivatives of variables in val_dict 
+            with resepct to expressions in self._exprlist. 
+        """
         return np.array([self.gradient_at(var, val_dict)
                          for var in val_dict.keys()]).transpose()
 
@@ -277,10 +317,6 @@ class Mul:
                 return term1 + term2 + term3 + term4
             else:
                 return Mul.derivative_at(sub_expr1, sub_expr2, (var, var), val_dict, order=2)
-#            return sub_expr1.derivative_at(var, val_dict,2)*sub_expr2.evaluation_at(val_dict)+\
-#                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
-#                   sub_expr1.derivative_at(var, val_dict,1)*sub_expr2.derivative_at(var, val_dict,1)+\
-#                   sub_expr1.evaluation_at(val_dict)*sub_expr2.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
@@ -318,17 +354,6 @@ class Div:
                 return term1 + term2 + term3 + term4 + term5  
             else:
                 return Div.derivative_at(sub_expr1, sub_expr2, (var, var), val_dict, order=2)
-#            return ((sub_expr1.derivative_at(var, val_dict,2)*\
-#                    sub_expr2.evaluation_at(val_dict)-\
-#                    sub_expr1.evaluation_at(val_dict)*\
-#                    sub_expr2.derivative_at(var, val_dict,2))*sub_expr2.evaluation_at(val_dict)**2 -\
-#                    2*(sub_expr1.derivative_at(var, val_dict,1)*\
-#                    sub_expr2.evaluation_at(val_dict) -\
-#                    sub_expr1.evaluation_at(val_dict)*\
-#                    sub_expr2.derivative_at(var, val_dict,1))*\
-#                    sub_expr2.evaluation_at(val_dict)*\
-#                    sub_expr2.derivative_at(var, val_dict,1))/\
-#                    sub_expr2.evaluation_at(val_dict)**4
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
@@ -336,25 +361,7 @@ class Div:
             return 1/sub_expr2.val
         elif var == sub_expr2:
             return -sub_expr1.val/sub_expr2/sub_expr2
-#class Pow:
-#    
-#    @staticmethod
-#    def evaluation_at(sub_expr1, sub_expr2, val_dict):
-#        return sub_expr1.evaluation_at(val_dict) **\
-#               sub_expr2.evaluation_at(val_dict)
-#    @staticmethod
-#    #f(x)^g(x) * g‘(x)  * ln( f(x) )+ f(x)^( g(x)-1 ) * g(x) * f’(x) 
-#    def derivative_at(sub_expr1, sub_expr2, var, val_dict):
-#        return  sub_expr1.evaluation_at(val_dict)** \
-#                sub_expr2.evaluation_at(val_dict)* \
-#                sub_expr2.derivative_at(var, val_dict)*\
-#                np.log(sub_expr1.evaluation_at(val_dict))+ \
-#                sub_expr1.evaluation_at(val_dict) **\
-#                (sub_expr2.evaluation_at(val_dict)-1)*\
-#                sub_expr2.evaluation_at(val_dict)*\
-#                sub_expr1.derivative_at(var, val_dict)
-
-# a simplified version: assuming sub_expr2 is a constant
+            
 class Pow:
 
     @staticmethod
@@ -379,15 +386,12 @@ class Pow:
                 return term1 + term2
             else:
                 return Pow.derivative_at(sub_expr1, sub_expr2, (var, var), val_dict, order=2)
-#            return p*(p-1)*np.power(sub_expr1.evaluation_at(val_dict),p-2.0)*sub_expr1.derivative_at(var, val_dict)**2\
-#                    + p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0)*sub_expr1.derivative_at(var, val_dict,2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
         p = sub_expr2.val
         return p*np.power(sub_expr1.val, p-1.0)
-#def pow(expr1, expr2):
-#    return Expression(Pow, expr1, expr2)
+
 
 class Exp:
     @staticmethod
@@ -409,8 +413,6 @@ class Exp:
                 return term1 + term2
             else:
                 return Exp.derivative_at(sub_expr1, (var,var), val_dict, order=2)
-#            return np.exp(sub_expr1.evaluation_at(val_dict)) * (sub_expr1.derivative_at(var, val_dict, order=1))**2 \
-#                 + np.exp(sub_expr1.evaluation_at(val_dict)) *  sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
@@ -432,12 +434,39 @@ def exp(expr):
 
 
 class Sin:
+    """ 
+    This is a class to wrap up static method related to sin operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, val_dict):
+        """
+        Compute sin of sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sin of sub_expr1 
+        """
         return np.sin(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1, var, val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if   order == 1:
             return sub_expr1.derivative_at(var, val_dict) * \
         np.cos(sub_expr1.evaluation_at(val_dict))
@@ -451,25 +480,60 @@ class Sin:
                 return term1 + term2
             else:
                 return Sin.derivative_at(sub_expr1, (var,var), val_dict, order=2)
-#            return -np.sin(sub_expr1.evaluation_at(val_dict)) * \
-#                   sub_expr1.derivative_at(var, val_dict, order=1)**2 + \
-#                   np.cos(sub_expr1.evaluation_at(val_dict)) * \
-#                   sub_expr1.derivative_at(var, val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return np.cos(sub_expr1.val)
         
 def sin(expr):
     return Expression(Sin, expr)
 
 class Cos:
+    """ 
+    This is a class to wrap up static method related to cos operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Evaluate sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        value of sub_expr1
+        """
         return np.cos(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1,var,val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default to 1, set to 2 if 2nd derivative is desired
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if   order == 1:
             return -sub_expr1.derivative_at(var, val_dict, order) * \
                    np.sin(sub_expr1.evaluation_at(val_dict)) 
@@ -490,14 +554,40 @@ class Cos:
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return -np.sin(sub_expr1.val)
         
 def cos(expr):
     return Expression(Cos, expr)
     
 class Tan:
+    """ 
+    This is a class to wrap up static method related to tan operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1,val_dict):
+        """
+        Evaluate sub_expr1 with inputs of variable values from val_dict.
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        value of sub_expr1
+        """
         return np.tan(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
