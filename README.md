@@ -12,6 +12,8 @@ by
 
 [![Coverage Status](https://coveralls.io/repos/github/D-F-Y-S/cs207-FinalProject/badge.svg?branch=master)](https://coveralls.io/github/D-F-Y-S/cs207-FinalProject?branch=master)
 
+[![Doc Status](https://readthedocs.org/projects/cs207-finalproject/badge/?version=latest)](https://cs207-finalproject.readthedocs.io/en/latest/?badge=latest)
+
 ## Introduction
 Automatic differentiation (AD) is a family of techniques for efficiently and accurately evaluating derivatives of numeric functions expressed as computer programs. Application of AD includes Newton’s method for solving nonlinear equations, real-parameter optimization, probabilistic inference, and backpropagation in neural networks. AD has been extremely popular because of the booming development in machine learning and deep learning techniques. Our AD sofeware package enable user to calculate derivatives using the forward and reverse mode. Our package has feature including rooting finding, optimization(Newton, Gradient Descent, BFGS), and backpropagation. 
 
