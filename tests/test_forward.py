@@ -449,3 +449,11 @@ def test_gradient():
     gradient_returned = f.gradient_at({x: 1.5, y: 2.5}, returns_dict=True)
     assert equals(gradient_returned[x], gradient_expected[0])
     assert equals(gradient_returned[y], gradient_expected[1])
+
+def test_eq():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.sin(x) + fwd.cos(y)
+    g = fwd.sin(x) + fwd.cos(y)
+    h = fwd.sin(y) + fwd.cos(x)
+    assert f == g
+    assert f != h
