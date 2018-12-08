@@ -31,4 +31,6 @@ Here is how to install `autodiff` on command line. We suppose that the user has 
 5. install `autodiff` by `pip install -e .`
 
 ## Getting Started
+Here is the [documentation](https://cs207-finalproject.readthedocs.io/en/latest/) page
+
 See `milestone2.ipynb` under `docs/`.
