@@ -7,7 +7,7 @@ def plot_contour(f, init_val_dict, plot_range=[-3,3],method = 'gradient_descent'
         a=opt.newton(f, init_val_dict,return_history=True)
     #first plot the contour
     xx=np.linspace(plot_range[0],plot_range[1],100)
-    yy=np.linspace(plot_range[0],plot_range[1],100)
+    yy=np.linspace(plo t_range[0],plot_range[1],100)
     xg,yg = np.meshgrid(xx,yy)
     z=np.zeros(shape=(len(xg.ravel()),))
     for i,val in enumerate(xg.ravel()):
