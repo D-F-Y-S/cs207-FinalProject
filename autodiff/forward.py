@@ -26,6 +26,8 @@ class Expression:
                 self._sub_expr1, self._sub_expr2, val_dict)
     
     def derivative_at(self, var, val_dict, order=1):
+        
+        if type(var) is tuple: order=len(var)
 
         if var is self: 
             if   order == 1: return 1.0
@@ -393,6 +395,11 @@ class Pow:
         p = sub_expr2.val
         return p*np.power(sub_expr1.val, p-1.0)
 
+def power(expr, p):
+    return Expression(Pow, expr, Constant(p))
+def sqrt(expr):
+    return Expression(Pow, expr, Constant(0.5))
+
 
 class Exp:
     @staticmethod
@@ -418,6 +425,9 @@ class Exp:
     @staticmethod
     def backderivative_at(sub_expr1,var):
         return sub_expr1.val
+    
+def exp(expr):
+    return Expression(Exp, expr)
         
 class Neg:
     @staticmethod
@@ -430,8 +440,6 @@ class Neg:
     @staticmethod
     def back_derivative(sub_expr1,var):
         return -1
-def exp(expr):
-    return Expression(Exp, expr)
 
 
 class Sin:

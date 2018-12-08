@@ -457,3 +457,15 @@ def test_eq():
     h = fwd.sin(y) + fwd.cos(x)
     assert f == g
     assert f != h
+
+def test_sqrt():
+    x, y = fwd.Variable(), fwd.Variable()
+    f = fwd.sqrt(fwd.sin(x) + fwd.cos(y))
+    dfdx = lambda x, y:  np.cos(x) / (2*np.sqrt(np.sin(x)+np.cos(y)))
+    dfdy = lambda x, y: -np.sin(y) / (2*np.sqrt(np.sin(x)+np.cos(y)))
+    d2fdxdy = lambda x, y: np.cos(x)*np.sin(y) / (4*(np.sin(x) + np.cos(y))**1.5)
+    assert equals(f.evaluation_at({x: 1.5, y:2.5}), np.sqrt(np.sin(1.5)+np.cos(2.5)))
+    assert equals(f.derivative_at(x, {x: 1.5, y:2.5}), dfdx(1.5, 2.5))
+    assert equals(f.derivative_at(y, {x: 1.5, y:2.5}), dfdy(1.5, 2.5))
+    assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
+    
