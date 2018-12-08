@@ -6,7 +6,21 @@ forward mode auto differentiation.
 import numpy as np
 
 class Expression:
+    """ 
+    This is a class for representing expression.
+    It is the super class for variable and constant.
+    """
     def __init__(self, ele_func, sub_expr1, sub_expr2=None):
+        """ 
+        The constructor for VectorFunction class. 
+        
+        PARAMETERS:
+        =======
+        ele_func: the function creating this expression
+        sub_expr1: variable/constant composing this expression
+        sub_expr2: variable/constant composing this expression, set to non
+        for unary operations
+        """
         self._ele_func  = ele_func
         self._sub_expr1 = sub_expr1
         self._sub_expr2 = sub_expr2
@@ -14,7 +28,18 @@ class Expression:
         self.bder=0
     
     def evaluation_at(self, val_dict):
+        """ 
+        The wrapper function for individual evaluation_at function of 
+        self_ele_func
         
+        PARAMETERS:
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        a scalar value 
+        """
         # self._sub_expr2 is None implies that self._ele_func is an unary operator
         if self._sub_expr2 is None: 
             return self._ele_func.evaluation_at(
@@ -26,7 +51,19 @@ class Expression:
                 self._sub_expr1, self._sub_expr2, val_dict)
     
     def derivative_at(self, var, val_dict, order=1):
-
+        """ 
+        The wrapper function for individual derivative_at function of 
+        self_ele_func
+        
+        PARAMETERS:
+        =======
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interests for derivative calculation
+        
+        RETURNS
+        ======== 
+        a scalar value 
+        """
         if var is self: 
             if   order == 1: return 1.0
             else: return 0.0
@@ -43,9 +80,10 @@ class Expression:
     
     def back_derivative(self,var,val_dict):
         """
-        Returns the derivative of var with resepct to its immediate parent.
-    
-        INPUTS
+        The wrapper function for individual backderivative_at 
+        function of self_ele_func
+        
+        PARAMETERS:
         =======
         val_dict: a dictionary containing variable name and values. Variables
         in val_dict are of atomic feature and cannot be further decomposed.
@@ -65,12 +103,37 @@ class Expression:
 
 
     def gradient_at(self, val_dict, returns_dict=False):
+        """
+        calculate 1st derivative of variables in val_dict using forward mode
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+        returns_dict: the format of output
+         
+        RETURNS
+        ========
+        derivative of variables in val_dict with respect to the current 
+        expression, stored in a dictionary or a 2-D numpy array
+        """
         if returns_dict:
             return {v: self.derivative_at(v, val_dict) for v in val_dict.keys()}
         return np.array([self.derivative_at(var, val_dict, order=1) 
                          for var in val_dict.keys()])
     
     def hessian_at(self, val_dict):
+        """
+        calculate 2nd derivative of variables in val_dict using forward mode
+    
+        INPUTS
+        =======
+        val_dict: a dictionary containing variable name and values.
+         
+        RETURNS
+        ========
+        2nd derivative of variables in val_dict with respect to the current 
+        expression, stored in a 2-D list
+        """
         return np.array( [ \
                           [self.derivative_at((var1, var2), val_dict, order=2)
                            for var1 in val_dict.keys()]
@@ -78,10 +141,12 @@ class Expression:
                           ] )
     
     def __neg__(self):
+        """ Implement dunder method for neg """
         return Expression(Neg, self)
 
                 
     def __add__(self, another):
+        """ Implement dunder method for add """
         if isinstance(another, Expression):
             return Expression(Add, self, another)
         # if the other operand is not an Expression, then it must be a number
@@ -91,18 +156,21 @@ class Expression:
     
     
     def __radd__(self, another):
+        """ Implement dunder method for right add """
         if isinstance(another, Expression):
             return Expression(Add, another, self)
         else:
             return Expression(Add, Constant(another), self)
     
     def __sub__(self, another):
+        """ Implement dunder method for subtraction """
         if isinstance(another, Expression):
             return Expression(Sub, self, another)
         else:
             return Expression(Sub, self, Constant(another))
     
     def __rsub__(self, another):
+        """ Implement dunder method for right subtraction """
         if isinstance(another, Expression):
             return Expression(Sub, another, self)
         else:
@@ -110,43 +178,49 @@ class Expression:
         
 
     def __mul__(self, another):
+        """ Implement dunder method for multiplication """
         if isinstance(another, Expression):
             return Expression(Mul,self,another)
         else:
             return Expression(Mul, self, Constant(another))
 
     def __rmul__(self, another):
+        """ Implement dunder method for right multiplication """
         if isinstance(another, Expression):
             return Expression(Mul,another,self)
         else:
             return Expression(Mul, Constant(another),self)
     
     def __truediv__(self, another):
+        """ Implement dunder method for division """
         if isinstance(another, Expression):
             return Expression(Div,self,another)
         else:
             return Expression(Div, self, Constant(another))
 
     def __rtruediv__(self, another):
+        """ Implement dunder method for right division """
         if isinstance(another, Expression):
             return Expression(Div,another,self)
         else:
             return Expression(Div, Constant(another),self)
     
     def __pow__(self,another):
+        """ Implement dunder method for power """
         if isinstance(another, Expression):
             return Expression(Pow,self,another)
         else:
             return Expression(Pow, self, Constant(another))
     
     def __rpow__(self,another):
+        """ Implement dunder method for right power """
         if isinstance(another, Expression):
             return Expression(Pow,another,self)
         else:
             return Expression(Pow, Constant(another),self)
     
     def __eq__(self, another):
-        """ Overwrite dunder method for ="""
+        """ Implement dunder method for equal """
         if not isinstance(another, Expression):
             return False
         return self._ele_func == another._ele_func \
@@ -154,53 +228,132 @@ class Expression:
                and self._sub_expr2 == another._sub_expr2
                
     def __ne__(self, another):
+        """ Implement dunder method not equal """
         return ~self.__eq__(another)
     
     def __hash__(self):
+        """ Implement dunder method hash """
         return object.__hash__(self)   
 
 class Variable(Expression):
+    """ 
+    This is a class for representing variable. 
+    """
     def __init__(self):
+        """ 
+        The constructor for VectorFunction class. 
+        It has no parameters: 
+        """
         self.val = None
         self.bder = 0
         return
     
     def evaluation_at(self, val_dict):
+        """ 
+        The function to evaluation the value of variable class
+        
+        PARAMETERS:
+        =======
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ======== 
+        a scalar value 
+        """
         return val_dict[self]
     
     def derivative_at(self, var, val_dict, order=1):
+        """ 
+        The function calculates derivative of variable class. 
+  
+        PARAMETERS:
+        =======
+        val_dict: a dictionary containing variable name and values.
+        var: variable whose derivative is the result of this function
+        order: default set to 1 for 1st derivative, change to 2 for 
+        higher order
+        
+        RETURNS
+        ========
+        scalar value  
+        """
         if order == 1:
             return 1.0 if var is self else 0.0
         else:
             return 0.0
     
     def __eq__(self, another):
+        """ Implement dunder method for equal """
         return another is self
     
     def __ne__(self, another):
+        """ Implement dunder method for not equal """
         return ~self.__eq__(another)
     
     def __hash__(self):
+        """ Implement dunder method for hash """
         return Expression.__hash__(self) 
 
 class Constant(Expression):
+    """ 
+    This is a class for representing constant. 
+      
+    Attributes: 
+       val: value of the constant
+    """
     def __init__(self, val):
+        """ 
+        The constructor for VectorFunction class. 
+        
+        PARAMETERS:
+        =======
+        val: the value of the constant object
+        """
         self.val = val
  
     def evaluation_at(self, val_dict):
+        """ 
+        The function to evaluation the value of constant class
+        
+        PARAMETERS:
+        ======= 
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        a scalar value 
+        """
+        retur
         return self.val
     
     def derivative_at(self, var, val_dict, order=1):
+        """ 
+        The function calculates derivative of constant class. 
+  
+        PARAMETERS:
+        ======= 
+        val_dict: a dictionary containing variable name and values.
+        var: variable whose derivative is the result of this function
+        order: default set to 1 for 1st derivative, change to 2 for 
+        higher order
+        
+        RETURNS
+        ========
+        scalar value  
+        """
         return 0.0
     
     def __eq__(self, another):
+         """ Implement dunder method for equal """
         if isinstance(another, Constant): return True
         else:                             return False
     
     def __ne__(self, another):
+         """ Implement dunder method for not equal """
         return ~self.__eq__(another)
     
     def __hash__(self):
+         """ Implement dunder method for hash"""
         return Expression.__hash__(self) 
 
 
@@ -215,8 +368,10 @@ class VectorFunction:
     def __init__(self, exprlist):
         """ 
         The constructor for VectorFunction class. 
-        Parameters: 
-           exprlist: a list of expressions with respect to which the class 
+        
+        PARAMETERS:
+        ======= 
+        exprlist: a list of expressions with respect to which the class 
         functions are applied to  
         """
         self._exprlist = exprlist.copy()
@@ -225,11 +380,13 @@ class VectorFunction:
         """ 
         The function to apply evaluation_at to a vector of expressions. 
   
-        Parameters: 
-            val_dict: a dictionary containing variable name and values.
+        PARAMETERS:
+        ======= 
+        val_dict: a dictionary containing variable name and values.
         
-        Returns: 
-            a numpy array containing value of expressions in the self._exprlist. 
+        RETURNS
+        ========
+        a numpy array containing value of expressions in the self._exprlist. 
         """
         return np.array([expr.evaluation_at(val_dict) 
                         for expr in self._exprlist])
@@ -238,12 +395,15 @@ class VectorFunction:
         """ 
         The function to apply derivative_at to a vector of expressions. 
   
-        Parameters: 
-            val_dict: a dictionary containing variable name and values.
-            var: variable whose derivative is the result of this function
-        Returns: 
-            a numpy array containing first derivative of expressions in 
-            self._exprlist with respect to var. 
+        PARAMETERS:
+        =======
+        val_dict: a dictionary containing variable name and values.
+        var: variable whose derivative is the result of this function
+       
+        RETURNS
+        ========
+        a numpy array containing first derivative of expressions in 
+        self._exprlist with respect to var. 
         """
         return np.array([f.derivative_at(var, val_dict) for f in self._exprlist])
     
@@ -252,20 +412,39 @@ class VectorFunction:
         The function to calculate jacobian with respect to atomic variables in 
         val_dict. 
   
-        Parameters: 
-            val_dict: a dictionary containing variable name and values.
+        PARAMETERS:
+        ======= 
+        val_dict: a dictionary containing variable name and values.
         
-        Returns: 
-            a 2-D numpy array containing derivatives of variables in val_dict 
-            with resepct to expressions in self._exprlist. 
+        RETURNS
+        ========
+        a 2-D numpy array containing derivatives of variables in val_dict 
+        with resepct to expressions in self._exprlist. 
         """
         return np.array([self.gradient_at(var, val_dict)
                          for var in val_dict.keys()]).transpose()
 
 
 class Add:
+    """ 
+    This is a class to wrap up static method related to add operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        """
+        Compute addition of sub_expr1 with sub_expr2 using inputs of variable
+        values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sub_expr1 + sub_expr2
+        """
         return sub_expr1.evaluation_at(val_dict) + \
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
@@ -274,31 +453,119 @@ class Add:
                sub_expr2.derivative_at(var, val_dict, order)
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant 
+        sub_expr2: expression or constant 
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return 1
 
 class Sub:
+    """ 
+    This is a class to wrap up static method related to sub operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        """
+        Compute subtraction of sub_expr2 from sub_expr1 using inputs of variable
+        values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sub_expr1 - sub_expr2
+        """
         return sub_expr1.evaluation_at(val_dict) - \
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return sub_expr1.derivative_at(var, val_dict, order) - \
                sub_expr2.derivative_at(var, val_dict, order)
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant 
+        sub_expr2: expression or constant 
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if var == sub_expr1:
             return 1
         if var == sub_expr2:
             return -1 
 
 class Mul:
+    """ 
+    This is a class to wrap up static method related to mul operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        """
+        Compute multiplication of sub_expr1 with sub_expr2 using inputs 
+        of variable values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sub_expr1 * sub_expr2
+        """
         return sub_expr1.evaluation_at(val_dict) *\
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if   order == 1:
             return sub_expr1.derivative_at(var, val_dict) * \
                    sub_expr2.evaluation_at(val_dict)+ \
@@ -321,18 +588,62 @@ class Mul:
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant 
+        sub_expr2: expression or constant 
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if var == sub_expr1:
             return sub_expr2.val
         else:
             return sub_expr1.val
                
 class Div:
+    """ 
+    This is a class to wrap up static method related to div operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        """
+        Compute division of sub_expr1 by sub_expr2 using inputs of variable
+        values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sub_expr1 / sub_expr2
+        """
         return sub_expr1.evaluation_at(val_dict) /\
                sub_expr2.evaluation_at(val_dict)
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if   order == 1:
             return  sub_expr1.derivative_at(var, val_dict) / \
                     sub_expr2.evaluation_at(val_dict)- \
@@ -358,20 +669,63 @@ class Div:
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant 
+        sub_expr2: expression or constant 
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if var == sub_expr1:
             return 1/sub_expr2.val
         elif var == sub_expr2:
             return -sub_expr1.val/sub_expr2/sub_expr2
             
 class Pow:
-
+    """ 
+    This is a class to wrap up static method related to pow operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, sub_expr2, val_dict):
+        """
+        Compute sub_expr1 to the sub_expr2 power using inputs of variable
+        values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        sub_expr1 ** sub_expr2
+        """
         return np.power(sub_expr1.evaluation_at(val_dict), 
                         sub_expr2.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1, sub_expr2, var, val_dict,order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         p = sub_expr2.evaluation_at(val_dict)
         if   order == 1:
             return p*np.power(sub_expr1.evaluation_at(val_dict), p-1.0) \
@@ -390,17 +744,59 @@ class Pow:
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,sub_expr2,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        sub_expr2: expression or constant
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         p = sub_expr2.val
         return p*np.power(sub_expr1.val, p-1.0)
 
 
 class Exp:
+    """ 
+    This is a class to wrap up static method related to exp operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, val_dict):
+        """
+        Compute exponent of sub_expr1 using inputs of variable
+        values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        exponent(sub_expr1)
+        """
         return np.exp(sub_expr1.evaluation_at(val_dict))
     
     @staticmethod
     def derivative_at(sub_expr1, var, val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         if   order == 1:
             return sub_expr1.derivative_at(var, val_dict) * \
                    np.exp(sub_expr1.evaluation_at(val_dict))
@@ -417,18 +813,70 @@ class Exp:
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
     @staticmethod
     def backderivative_at(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return sub_expr1.val
         
 class Neg:
+    """ 
+    This is a class to wrap up static method related to neg operation
+    """
     @staticmethod
     def evaluation_at(sub_expr1, val_dict):
+        """
+        Compute negation of sub_expr1 using inputs of variable
+        values from val_dict.
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant
+        val_dict: a dictionary containing variable name and values.
+        
+        RETURNS
+        ========
+        negate sub_expr1
+        """
         return -sub_expr1.evaluation_at(val_dict)
     
     @staticmethod
     def derivative_at(sub_expr1, var, val_dict, order=1):
+        """
+        calculate 1st derivative of var using forward mode
+    
+        INPUTS
+        =======
+        sub_expr1: expression whose components include var(or itself be to var)
+        val_dict: a dictionary containing variable name and values.
+        var: variable of interest
+        order: default set to 1, set to 2 if 2nd derivative is desired
+        
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return -sub_expr1.derivative_at(var, val_dict, order)
     @staticmethod
     def back_derivative(sub_expr1,var):
+        """
+        calculate 1st derivative of var using back propagation
+    
+        INPUTS
+        =======
+        sub_expr1: expression or constant 
+        var: variable of interest
+        RETURNS
+        ========
+        derivative of var with respect to sub_expr1
+        """
         return -1
 def exp(expr):
     return Expression(Exp, expr)
@@ -460,10 +908,11 @@ class Sin:
     
         INPUTS
         =======
-        sub_expr1: expression whose components include var(or itself be to var)
+        sub_expr1: expression or constant 
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default set to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -490,7 +939,6 @@ class Sin:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -527,7 +975,7 @@ class Cos:
     
         INPUTS
         =======
-        sub_expr1: expression whose components include var(or itself be to var)
+        sub_expr1: expression or constant
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
@@ -557,7 +1005,6 @@ class Cos:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -594,7 +1041,7 @@ class Tan:
     
         INPUTS
         =======
-        sub_expr1: expression whose components include var(or itself be to var)
+        sub_expr1: expression or constant
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
@@ -625,7 +1072,6 @@ class Tan:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -681,7 +1127,6 @@ class Cotan:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -739,7 +1184,6 @@ class Sec:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -798,7 +1242,6 @@ class Csc:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -856,7 +1299,6 @@ class Sinh:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -914,7 +1356,6 @@ class Cosh:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -973,7 +1414,6 @@ class Tanh:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -1034,7 +1474,6 @@ class Csch:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -1093,7 +1532,6 @@ class Sech:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -1154,7 +1592,6 @@ class Coth:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -1216,7 +1653,6 @@ class Arcsin:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -1277,7 +1713,6 @@ class Arccos:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
@@ -1338,7 +1773,6 @@ class Arctan:
         INPUTS
         =======
         sub_expr1: expression whose components include var(or itself be to var)
-        val_dict: a dictionary containing variable name and values.
         var: variable of interest
         RETURNS
         ========
