@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
                  name="DFYS_autodiff",
-                 version="0.0.1",
+                 version="0.0.3",
                  author="Feiyu Chen; Yueting Luo; Yan Zhao",
                  author_email="yluo@hsph.harvard.edu",
                  description="An automatic differentiation package",
                  long_description=long_description,
                  long_description_content_type="text/markdown",
-                 url="https://github.com/pypi/DFYS-autodiff",
+                 url="https://github.com/D-F-Y-S/cs207-FinalProject",
                  packages=setuptools.find_packages(),
                  classifiers=[
                               "Programming Language :: Python :: 3",
