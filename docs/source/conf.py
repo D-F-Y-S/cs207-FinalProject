@@ -39,6 +39,13 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
+autodoc_default_options = {
+    'members': 'var1, var2',
+    'member-order': 'bysource',
+    'special-members': '__init__',
+    'undoc-members': None,
+    'exclude-members': '__weakref__'
+}
 
 autodoc_mock_imports = ["django"]
 
