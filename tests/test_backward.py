@@ -1,8 +1,14 @@
+"""
+This file contains the tests for the backward mode auto differentiation. 
+"""
 from test_forward import equals
 import autodiff.forward as fw
 import autodiff.backprop as bp
 import pytest
 def test_backward():
+    """
+    testing backward propagation with 3 examples
+    """
     a = fw.Variable()
     b = fw.Variable()
     c = a+b

@@ -1,6 +1,5 @@
 """
-This file contains the tests for the forward mode auto differentiation. We may 
-want to separate the code into multiple files later.
+This file contains the tests for the forward mode auto differentiation. 
 """
 
 import pytest
@@ -8,25 +7,40 @@ import numpy as np
 import autodiff.forward as fwd
 
 def equals(a, b, tol=1e-10):
+    """
+    Function comparing floats accomodating for precision difference
+    """
     return np.abs(a-b) <= tol
 
 def test_negation():
+    """
+    Function testing negation
+    """
     x=fwd.Variable()
     f=-x
     assert equals(f.evaluation_at({x: 3.0}),    -3.0)
     assert equals(f.derivative_at(x, {x: 3.0}), -1.0)
 
 def test_adding_constant():
+    """
+    Function testing addition with constant class
+    """
     a = fwd.Variable()
     assert equals((a+1).derivative_at(a, {a: 0.0}), 1.0)
     assert equals((1+a).derivative_at(a, {a: 0.0}), 1.0)
     
 def test_subtracting_constant():
+    """
+    Function testing substraction with constant class
+    """
     a = fwd.Variable()
     assert equals((a-1).derivative_at(a, {a: 0.0}),  1.0)
     assert equals((1-a).derivative_at(a, {a: 0.0}), -1.0)
 
 def test_adding_three_variables():
+    """
+    Function testing addition with variable class
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = fwd.Variable()
@@ -36,6 +50,9 @@ def test_adding_three_variables():
     assert equals(f.derivative_at(a, {a: 1.0, b: 2.0, c: 3.0}),  np.exp(2.0))
     
 def test_exp():
+    """
+    Function testing exponent
+    """
     x = fwd.Variable()
     y = fwd.Variable()
     g = x + fwd.exp(y-1)
@@ -44,16 +61,25 @@ def test_exp():
     assert equals(g.derivative_at(y, {x: 1.0, y: 2.0}), np.exp(1.0))
 
 def test_multiply_constant():
+    """
+    Function testing multiplication with constant
+    """
     x = fwd.Variable()
     assert equals((2.0*x).derivative_at(x,{x:3.0}), 2.0)
     assert equals((x*2.0).derivative_at(x,{x:3.0}), 2.0)
 
 def test_divide_constant():
+    """
+    Function testing division with constant
+    """
     x = fwd.Variable()
     assert equals((x/2.0).derivative_at(x,{x:3.0}), 0.5)
     assert equals((2.0/x).derivative_at(x,{x:3.0}), -2/9.0)
 
 def test_multiply():
+    """
+    Function testing multiplication
+    """
     x = fwd.Variable()
     y = fwd.Variable()
     f = x*y
@@ -62,6 +88,9 @@ def test_multiply():
     assert equals(f.derivative_at(y, {x: 3.0, y: 2.0}), 3.0)
 
 def test_divide():
+    """
+    Function testing division
+    """
     x = fwd.Variable()
     y = fwd.Variable()
     f = x/y
@@ -70,6 +99,9 @@ def test_divide():
     assert equals(f.derivative_at(y, {x: 3.0, y: 2.0}), -0.75)
 
 def test_power():
+    """
+    Function testing power
+    """
     x = fwd.Variable()
     y = fwd.Variable()
     f = x**y
@@ -78,6 +110,9 @@ def test_power():
 #    assert equals(f.derivative_at(y, {x: 3.0, y: 2.0}), np.log(3.)*3**2)
 
 def test_sin():
+    """
+    Function testing sin
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     f = fwd.sin(a*b)
@@ -86,6 +121,9 @@ def test_sin():
 
 
 def test_cos():
+    """
+    Function testing cos
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a+b
@@ -97,6 +135,9 @@ def test_cos():
     assert equals(f2.derivative_at(a,{a:2,b:2}), -np.sin(2*2)*2)
 
 def test_tan():
+    """
+    Function testing tan
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -105,6 +146,9 @@ def test_tan():
     assert equals(f.derivative_at(c,{a:1,b:2}), 2*(1/np.cos(4))**2)
     
 def test_cotan():
+    """
+    Function testing cotan
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -113,6 +157,9 @@ def test_cotan():
     assert equals(f.derivative_at(c,{a:1,b:2}), -(1/(np.sin(4)**2))*2)
 
 def test_sec():
+    """
+    Function testing sec
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -121,6 +168,9 @@ def test_sec():
     assert equals(f.derivative_at(c,{a:1,b:2}), np.tan(4)*(1/np.cos(4))*2)
     
 def test_csc():
+    """
+    Function testing csc
+    """
     # -csc x cot x 
     a = fwd.Variable()
     b = fwd.Variable()
@@ -130,6 +180,9 @@ def test_csc():
     assert equals(f.derivative_at(c,{a:1,b:2}), -(1/np.tan(4))*(1/np.sin(4))*2)
 
 def test_sinh():
+    """
+    Function testing sinh
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -139,6 +192,9 @@ def test_sinh():
 
 
 def test_cosh():
+    """
+    Function testing cosh
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -147,6 +203,9 @@ def test_cosh():
     assert equals(f.derivative_at(c,{a:3,b:2}), np.sinh(12)*2)
     
 def test_tanh():
+    """
+    Function testing tanh
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -155,6 +214,9 @@ def test_tanh():
     assert equals(f.derivative_at(c,{a:3,b:2}), 1-np.tanh(6)**2)
 
 def test_csch():
+    """
+    Function testing csch
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -164,6 +226,9 @@ def test_csch():
                   -2*np.cosh(12)/np.sinh(12)/np.sinh(12))
 
 def test_sech():
+    """
+    Function testing sech
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -174,6 +239,9 @@ def test_sech():
                   -(np.sinh(2)/np.cosh(2))*(1/np.cosh(2))*1)
 
 def test_coth():
+    """
+    Function testing coth
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -182,6 +250,9 @@ def test_coth():
     assert equals(f.derivative_at(c,{a:3,b:2}), (-(1/np.sinh(12))**2*2))
 
 def test_arcsin():
+    """
+    Function testing arcsin
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -191,6 +262,9 @@ def test_arcsin():
                   (1/np.sqrt(1-(0.2*0.5*0.5)**2))*0.5)
 
 def test_arccos():
+    """
+    Function testing arccos
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -200,6 +274,9 @@ def test_arccos():
                   (-1/np.sqrt(1-(0.2*0.5*0.5)**2))*0.5)
 
 def test_arctan():
+    """
+    Function testing arctan
+    """
     a = fwd.Variable()
     b = fwd.Variable()
     c = a*b
@@ -208,6 +285,9 @@ def test_arctan():
     assert equals(f.derivative_at(c,{a:2,b:3}), (1/(18**2+1))*3)
 
 def test_vectorfunction():
+    """
+    Function testing applying operations to vector of expression
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.sin(x) + fwd.cos(y)
     g = x**2 - y**2
@@ -232,6 +312,9 @@ def test_vectorfunction():
             assert equals(jacobian_returned[i, j], jacobian_expected[i, j])
 
 def test_sin_2ndord():
+    """
+    Function testing 2nd order sin
+    """
     # one variable
     x = fwd.Variable()
     f = fwd.sin(x)
@@ -246,6 +329,9 @@ def test_sin_2ndord():
         g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
 
 def test_cos_2ndord():
+    """
+    Function testing 2nd order cos
+    """
     # one variable
     x = fwd.Variable()
     f = fwd.cos(x)
@@ -260,6 +346,9 @@ def test_cos_2ndord():
         g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
 
 def test_pow_2ndord():
+    """
+    Function testing 2nd order power
+    """
     # one variable
     x = fwd.Variable()
     f = (x+1)**3
@@ -273,6 +362,9 @@ def test_pow_2ndord():
         g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
     
 def test_exp_2ndord():
+    """
+    Function testing 2nd order exp
+    """
     # one variable
     x = fwd.Variable()
     f = fwd.exp(2.0*x + 3.0)
@@ -287,6 +379,9 @@ def test_exp_2ndord():
         g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
 
 def test_tan_2ndord():
+    """
+    Function testing 2nd order tan
+    """
     # one variable
     x = fwd.Variable()
     f = fwd.tan(2.0*x - 3.0)
@@ -302,6 +397,9 @@ def test_tan_2ndord():
         g.derivative_at(x, {x:1.0, y: 2.0}, order=3)
 
 def test_notimplemented():
+    """
+    Function testing raising not implemented error for higher order
+    """
     x = fwd.Variable()
     y = fwd.Variable()
     
@@ -350,6 +448,9 @@ def test_notimplemented():
         f.derivative_at(x, {x:0.5}, order=2)
 
 def test_pow_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for power on two variables
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = x**3 + y**3
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}, order=2), 0.0)
@@ -362,6 +463,9 @@ def test_pow_2ndord_2vars():
                   -6.0*(1.5-2.5))
 
 def test_mul_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for multiplication on two variables
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = x**2 * y**2
     assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 
@@ -372,6 +476,9 @@ def test_mul_2ndord_2vars():
                   4.0*1.5*2.5)
 
 def test_div_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for division on two variables
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = x**2 / y**2
     assert equals(f.derivative_at((x, x), {x: 1.5, y:2.5}, order=2), 
@@ -382,6 +489,9 @@ def test_div_2ndord_2vars():
                   -4.0*1.5/2.5**3)
 
 def test_sin_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for sin with two-variable input
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.sin(x/y)
     df_dxdy = lambda x, y: -(y*np.cos(x/y) - x*np.sin(x/y))/y**3
@@ -393,6 +503,9 @@ def test_sin_2ndord_2vars():
                   df_dxdy(1.5, 2.5))
     
 def test_cos_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for cos with two-variable input
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.cos(x/y)
     df_dxdy = lambda x, y: (y*np.sin(x/y) + x*np.cos(x/y))/y**3
@@ -404,6 +517,9 @@ def test_cos_2ndord_2vars():
                   df_dxdy(1.5, 2.5))
 
 def test_tan_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for tan with two-variable input
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.tan(x/y)
     df_dxdy = lambda x, y: -(y/np.cos(x/y)**2 + 2*x*np.tan(x/y)/np.cos(x/y)**2) / y**3
@@ -415,6 +531,9 @@ def test_tan_2ndord_2vars():
                   df_dxdy(1.5, 2.5))
 
 def test_exp_2ndord_2vars():
+    """
+    Function testing 2nd order derivative for exp with two-variable input
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.exp(x/y)
     df_dxdy = lambda x, y: -(x*np.exp(x/y) + y*np.exp(x/y)) / y**3
@@ -426,6 +545,9 @@ def test_exp_2ndord_2vars():
                   df_dxdy(1.5, 2.5))
 
 def test_hessian():
+    """
+    Function testing generation of hessian matrix
+    """
     x, y = fwd.Variable(), fwd.Variable()
     rosen = 100.0*(y - x**2)**2 + (1 - x)**2.0
     rosen_hessian = lambda x, y: \
@@ -439,6 +561,9 @@ def test_hessian():
                           rosen_hessian_expected[i, j])
 
 def test_gradient():
+    """
+    Function testing generation of gradient matrix
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.sin(x) + fwd.cos(y)
     f_gradient_at = lambda x, y: np.array([np.cos(x), -np.sin(y)])
@@ -451,6 +576,9 @@ def test_gradient():
     assert equals(gradient_returned[y], gradient_expected[1])
 
 def test_eq():
+    """
+    Function testing dunder method equal
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.sin(x) + fwd.cos(y)
     g = fwd.sin(x) + fwd.cos(y)
@@ -459,6 +587,9 @@ def test_eq():
     assert f != h
 
 def test_sqrt():
+    """
+    Function testing sqrt
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.sqrt(fwd.sin(x) + fwd.cos(y))
     dfdx = lambda x, y:  np.cos(x) / (2*np.sqrt(np.sin(x)+np.cos(y)))
@@ -470,6 +601,9 @@ def test_sqrt():
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
 
 def test_log():
+    """
+    Function testing natural log(i.e. ln in math notation)
+    """
     x, y = fwd.Variable(), fwd.Variable()
     f = fwd.log(fwd.sin(x)+y**2)
     dfdx = lambda x, y: np.cos(x) / (np.sin(x)+y**2)
@@ -481,6 +615,9 @@ def test_log():
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
     
 def test_logit():
+    """
+    Function testing logit
+    """
     x = fwd.Variable()
     f = fwd.logit(x)
     f_exact = lambda x: np.log(x/(1-x))
@@ -489,6 +626,9 @@ def test_logit():
     assert equals(f.derivative_at(x, {x: 0.8}), dfdx(0.8))
 
 def test_sigmoid():
+    """
+    Function testing sigmoid
+    """
     x = fwd.Variable()
     f = fwd.sigmoid(x)
     f_exact = lambda x: 1/(1+np.exp(-x))
