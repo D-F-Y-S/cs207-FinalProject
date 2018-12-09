@@ -80,4 +80,13 @@ def test_backward():
     var_list = [a,b,c,d,e,f,g,h]
     for i in var_list:
         assert(equals(i.bder, h.derivative_at(i,val_dict)))
+    
+    a = fw.Variable()
+    b = fw.Variable()
+    c = a/b
+    val_dict = {b:1,a:2}
+    bp.back_propagation(c,val_dict)
+    var_list = [a,b,c]
+    for i in var_list:
+        assert(equals(i.bder, c.derivative_at(i,val_dict)))
     print('Passed')
