@@ -830,7 +830,7 @@ class Exp:
         ========
         derivative of var with respect to sub_expr1
         """
-        return sub_expr1.val
+        return np.exp(sub_expr1.val)
     
 def exp(expr):
     return Expression(Exp, expr)
@@ -856,6 +856,9 @@ class Log:
             else:
                 return Log.derivative_at(sub_expr1, (var,var), val_dict, order=2)
         else: raise NotImplementedError('3rd order or higher derivatives are not implemented.')
+    def backderivative_at(sub_expr1,var):
+        if sub_expr1 == var:
+            return 1/sub_expr1.val
 
 def log(expr):
     return Expression(Log, expr)
@@ -898,8 +901,9 @@ class Neg:
         derivative of var with respect to sub_expr1
         """
         return -sub_expr1.derivative_at(var, val_dict, order)
+    
     @staticmethod
-    def back_derivative(sub_expr1,var):
+    def backderivative_at(sub_expr1,var):
         """
         calculate 1st derivative of var using back propagation
     
