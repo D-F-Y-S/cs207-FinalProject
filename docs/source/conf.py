@@ -177,3 +177,7 @@ source_parsers = {
 }
 
 source_suffix = ['.rst', '.md']
+
+# add autodiff source path, so that it can be found by autodoc
+import sys, os
+sys.path.insert(0, '../../autodiff')
