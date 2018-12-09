@@ -1,5 +1,5 @@
 """
-This file contains the tests for root finding.
+This file contains the tests for root finding using Newont's method.
 """
 
 import pytest
@@ -9,9 +9,16 @@ import autodiff.rootfinding as rf
 
 
 def equals(a, b, tol=1e-10):
+    """
+    Function comparing equal with accomodation to precision difference
+    """
     return np.abs(a-b) <= tol
 
 def test_newton_scalar():
+    """
+    Function testing Newton's Method on finding roots for 1-D or 2-D scalar 
+    function
+    """
     # test 1-d scalar function
     x = fwd.Variable()
     f = x - fwd.sin(x)
@@ -26,10 +33,3 @@ def test_newton_scalar():
     root_x, root_y = root_2d[x], root_2d[y]
     assert equals(root_x**2+root_y**2, 0.0, tol=1e-6)
     
-#    # test warning (not sure how to do it...)
-#    x, y = fwd.Variable(), fwd.Variable()
-#    g = x**2+y**2
-#    try:
-#        root_2d = rf.newton_scalar(g, {x: 1.0, y: 2.0}, 10, tol=1e-6)
-#    except:
-#        assert True

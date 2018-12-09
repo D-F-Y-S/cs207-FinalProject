@@ -1,6 +1,21 @@
+"""
+This file contains the back propagation feature using interface designed in 
+forward.py
+"""
 import autodiff.forward as fwd
 
 def forward_pass(y,val_dict):
+    """ 
+    The function evaluating each variable/constant and storing their values
+    in .val attributes, using atomic variable values from val_dict, in a 
+    recursive fashion, starting from root node in the computational graph
+        
+    INPUTS:
+    =======
+    val_dict: a dictionary containing variable name and values.
+    y: the highest node(root) encompassing all variable in the computational 
+    graph
+    """
     # forward pass, store values
     if type(y) == fwd.Expression:
         y.val = y.evaluation_at(val_dict)
@@ -13,6 +28,15 @@ def forward_pass(y,val_dict):
     return 
 
 def initialize(top,y):
+    """ 
+    The function initializing derivative values of each variable/constant
+    in the computational graph with respect to the root.
+        
+    INPUTS:
+    =======
+    y: the highest node(root) encompassing all variable in the computational 
+    graph
+    """
     #print(y.val)
     if y == top:
         y.bder = 1 
@@ -25,6 +49,17 @@ def initialize(top,y):
     return
 
 def backward(y,val_dict,depth = 0):
+    """ 
+    The function calculating derivative values of each variable/constant
+    in the computational graph with respect to the root in a recursive fashion,
+    starting from the root node.
+        
+    INPUTS:
+    =======
+    y: the highest node(root) encompassing all variable in the computational 
+    graph
+    val_dict: a dictionary containing variable name and values.
+    """
     # val_dict stores the basic variables
     # (atomic,cannot be further decomposed)
     if type(y) == fwd.Expression:
@@ -37,6 +72,18 @@ def backward(y,val_dict,depth = 0):
     return 
 
 def back_propagation(y,val_dict):
+    """ 
+    The wrapper function for three steps of back propogation.
+    After calling this function, the .bder attributes of each variables/constant
+    in the computational graph stores its first derivative with respect to
+    the root node.
+        
+    INPUTS:
+    =======
+    y: the highest node(root) encompassing all variable in the computational 
+    graph
+    val_dict: a dictionary containing variable name and values.
+    """
     # get backprop derivative with respect to y at every node lower than y
     forward_pass(y,val_dict)
     initialize(y,y)
