@@ -107,7 +107,6 @@ def test_power():
     f = x**y
     assert equals(f.evaluation_at({x: 3.0, y: 2.0}),    9.0)
     assert equals(f.derivative_at(x, {x: 3.0, y: 2.0}), 6.0)
-#    assert equals(f.derivative_at(y, {x: 3.0, y: 2.0}), np.log(3.)*3**2)
 
 def test_sin():
     """
@@ -613,6 +612,8 @@ def test_log():
     assert equals(f.derivative_at(x, {x: 1.5, y:2.5}), dfdx(1.5, 2.5))
     assert equals(f.derivative_at(y, {x: 1.5, y:2.5}), dfdy(1.5, 2.5))
     assert equals(f.derivative_at((x, y), {x: 1.5, y:2.5}), d2fdxdy(1.5, 2.5))
+    with pytest.raises(NotImplementedError):
+        f.derivative_at(x, {x:1.0, y: 2.0}, order=3)
     
 def test_logit():
     """

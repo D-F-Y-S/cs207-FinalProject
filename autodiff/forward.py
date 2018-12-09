@@ -685,7 +685,7 @@ class Div:
         if var == sub_expr1:
             return 1/sub_expr2.val
         elif var == sub_expr2:
-            return -sub_expr1.val/sub_expr2/sub_expr2
+            return -sub_expr1.val/sub_expr2.val**2
             
 class Pow:
     """ 
