@@ -47,3 +47,22 @@ def test_backward():
         assert(equals(i.bder, g.derivative_at(i,val_dict)))
 
 
+    a = fw.Variable()
+    b = fw.Variable()
+    c = fw.cotan(a)
+    d = fw.sech(b)
+    e = fw.tanh(d)
+    f = fw.csch(e)
+    g = c+f
+    g2= g/2
+    h = fw.arcsin(g2)
+    i = fw.arccos(h)
+    j = fw.arctan(i)
+    k = fw.cosh(j)
+    l = fw.sin(k)
+    val_dict = {b:1,a:2}
+    bp.back_propagation(l,val_dict)
+    var_list = [a,b,c,d,e,f,g,g2,h,i,j,k,l]
+    for num in var_list:
+        assert(equals(num.bder, l.derivative_at(num,val_dict)))
+    print('Passed')
