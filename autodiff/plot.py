@@ -1,7 +1,8 @@
 import autodiff.optimize as opt
 import matplotlib.pyplot as plt
 import numpy as np
-def plot_contour(f, init_val_dict, plot_range=[-3,3],method = 'gradient_descent'):
+
+def plot_contour(f, init_val_dict, x,y,plot_range=[-3,3],method = 'gradient_descent'):
     if method == 'gradient_descent':
         a=opt.gradient_descent(f, init_val_dict,return_history=True)
     elif method =='newton':
