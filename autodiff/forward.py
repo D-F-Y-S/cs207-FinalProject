@@ -325,7 +325,6 @@ class Constant(Expression):
         ========
         a scalar value 
         """
-        retur
         return self.val
     
     def derivative_at(self, var, val_dict, order=1):
@@ -347,16 +346,16 @@ class Constant(Expression):
     
     def __eq__(self, another):
          """ Implement dunder method for equal """
-        if isinstance(another, Constant): return True
-        else:                             return False
+         if isinstance(another, Constant): return True
+         else:                             return False
     
     def __ne__(self, another):
          """ Implement dunder method for not equal """
-        return ~self.__eq__(another)
+         return ~self.__eq__(another)
     
     def __hash__(self):
          """ Implement dunder method for hash"""
-        return Expression.__hash__(self) 
+         return Expression.__hash__(self) 
 
 
 class VectorFunction:
