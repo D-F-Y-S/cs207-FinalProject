@@ -36,6 +36,24 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
 </ul>
 </div>
+<span class="target" id="module-autodiff.forward"></span><p>This file contains the central data structure and functions related to the
+forward mode auto differentiation. We may want to separate the code into 
+multiple files later.</p>
+<dl class="class">
+<dt id="autodiff.forward.Expression">
+<em class="property">class </em><code class="descclassname">autodiff.forward.</code><code class="descname">Expression</code><span class="sig-paren">(</span><em>ele_func</em>, <em>sub_expr1</em>, <em>sub_expr2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#autodiff.forward.Expression" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="autodiff.forward.Variable">
+<em class="property">class </em><code class="descclassname">autodiff.forward.</code><code class="descname">Variable</code><a class="headerlink" href="#autodiff.forward.Variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="autodiff.forward.Constant">
+<em class="property">class </em><code class="descclassname">autodiff.forward.</code><code class="descname">Constant</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#autodiff.forward.Constant" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Automatic differentiation (AD) is a family of techniques for efficiently and accurately evaluating derivatives of numeric functions expressed as computer programs. Application of AD includes Newton’s method for solving nonlinear equations, real-parameter optimization, probabilistic inference, and backpropagation in neural networks. AD has been extremely popular because of the booming development in machine learning and deep learning techniques. Our AD sofeware package enable user to calculate derivatives using the forward and reverse mode.</p>

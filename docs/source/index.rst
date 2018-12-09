@@ -13,6 +13,13 @@ DFYS AutoDiff Documentation
    Featured Application
    Summary
 
+.. automodule:: autodiff.forward
+.. autoclass:: Expression
+    :members:
+.. autoclass:: Variable
+    :members:
+.. autoclass:: Constant
+
 Introduction
 --------------
 Automatic differentiation (AD) is a family of techniques for efficiently and accurately evaluating derivatives of numeric functions expressed as computer programs. Application of AD includes Newton’s method for solving nonlinear equations, real-parameter optimization, probabilistic inference, and backpropagation in neural networks. AD has been extremely popular because of the booming development in machine learning and deep learning techniques. Our AD sofeware package enable user to calculate derivatives using the forward and reverse mode. 
@@ -33,4 +40,5 @@ This project_ is hosted on GitHub.
 
 .. * :ref:`genindex`
 .. * :ref:`modindex`
+
 .. * :ref:`search`
