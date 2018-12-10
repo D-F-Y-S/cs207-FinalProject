@@ -54,9 +54,13 @@ The class of functions consisting of the polynomials, the exponential functions,
 + Core of automatic differentiation
 
 For the first derivative:
-$$\dfrac{dy}{dx} = \dfrac{dy}{du}\cdot\dfrac{du}{dx}$$
+
+<img src="https://latex.codecogs.com/svg.latex?\dfrac{dy}{dx} = \dfrac{dy}{du}\cdot\dfrac{du}{dx}"/>
+
 For the second derivative:
-$$\dfrac{\partial^2 t}{\partial x_i \partial x_j} = \sum_k(\dfrac{\partial y}{\partial u_k}\dfrac{u_k^2}{\partial x_i \partial x_j}) + \sum_{k,l}(\dfrac{\partial^2 y}{\partial u_k \partial u_l}\dfrac{\partial u_k}{\partial x_i}\dfrac{\partial u_l}{\partial x_j})$$
+
+<img src="https://latex.codecogs.com/svg.latex?\dfrac{\partial^2 t}{\partial x_i \partial x_j} = \sum_k(\dfrac{\partial y}{\partial u_k}\dfrac{u_k^2}{\partial x_i \partial x_j}) + \sum_{k,l}(\dfrac{\partial^2 y}{\partial u_k \partial u_l}\dfrac{\partial u_k}{\partial x_i}\dfrac{\partial u_l}{\partial x_j})"/>
+
 **Topological Graph**
 + Each node represent a variable
 + Arrows indicate topological orders(order of operations) and operations themselves.
