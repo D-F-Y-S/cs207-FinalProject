@@ -55,11 +55,10 @@ The class of functions consisting of the polynomials, the exponential functions,
 
 For the first derivative:
 
-<img src="https://latex.codecogs.com/svg.latex?\dfrac{dy}{dx} = \dfrac{dy}{du}\cdot\dfrac{du}{dx}"/>
+<a href="https://www.codecogs.com/eqnedit.php?latex=\dfrac{dy}{dx}&space;=&space;\dfrac{dy}{du}\cdot\dfrac{du}{dx}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\dfrac{dy}
 
 For the second derivative:
 
-<img src="https://latex.codecogs.com/svg.latex?\dfrac{\partial^2 t}{\partial x_i \partial x_j} = \sum_k(\dfrac{\partial y}{\partial u_k}\dfrac{u_k^2}{\partial x_i \partial x_j}) + \sum_{k,l}(\dfrac{\partial^2 y}{\partial u_k \partial u_l}\dfrac{\partial u_k}{\partial x_i}\dfrac{\partial u_l}{\partial x_j})"/>
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\dfrac{\partial^2&space;t}{\partial&space;x_i&space;\partial&space;x_j}&space;=&space;\sum_k(\dfrac{\partial&space;y}{\partial&space;u_k}\dfrac{u_k^2}{\partial&space;x_i&space;\partial&space;x_j})&space;&plus;&space;\sum_{k,l}(\dfrac{\partial^2&space;y}{\partial&space;u_k&space;\partial&space;u_l}\dfrac{\partial&space;u_k}{\partial&space;x_i}\dfrac{\partial&space;u_l}{\partial&space;x_j})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\dfrac{\partial^2&space;t}{\partial&space;x_i&space;\partial&space;x_j}&space;=&space;\sum_k(\dfrac{\partial&space;y}{\partial&space;u_k}\dfrac{u_k^2}{\partial&space;x_i&space;\partial&space;x_j})&space;&plus;&space;\sum_{k,l}(\dfrac{\partial^2&space;y}{\partial&space;u_k&space;\partial&space;u_l}\dfrac{\partial&space;u_k}{\partial&space;x_i}\dfrac{\partial&space;u_l}{\partial&space;x_j})" title="\dfrac{\partial^2 t}{\partial x_i \partial x_j} = \sum_k(\dfrac{\partial y}{\partial u_k}\dfrac{u_k^2}{\partial x_i \partial x_j}) + \sum_{k,l}(\dfrac{\partial^2 y}{\partial u_k \partial u_l}\dfrac{\partial u_k}{\partial x_i}\dfrac{\partial u_l}{\partial x_j})" /></a>
 
