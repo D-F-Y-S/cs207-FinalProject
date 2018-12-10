@@ -1070,10 +1070,11 @@ table {
 <span class="sd">This file contains some root finding algorithms built on top of autodiff.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="c1"># import autodiff.forward as fwd</span>
 
-<span class="k">def</span> <span class="nf">newton_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">init_val_dict</span><span class="p">,</span> <span class="n">max_itr</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+
+<span class="kn">from</span> <span class="nn">autodiff.backprop</span> <span class="kn">import</span> <span class="n">back_propagation</span>
+
+<span class="k">def</span> <span class="nf">newton_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">init_val_dict</span><span class="p">,</span> <span class="n">max_itr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;forward&#39;</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Newton&#39;s Method finding 0 root for a single expression </span>
 <span class="sd">    </span>
@@ -1082,6 +1083,8 @@ table {
 <span class="sd">    f: expression </span>
 <span class="sd">    init_val_dict: dictionary containing initial value of variables</span>
 <span class="sd">    max_itr: maximum iteration before the algorithm stops</span>
+<span class="sd">    method: string, default set to &#39;forward mode&#39;, in all other cases </span>
+<span class="sd">    use &#39;backward&#39;</span>
 <span class="sd">    tol: tolerance, the minimum threshold for absolute </span>
 <span class="sd">    difference of value of f from 0 for the algorithm to stop</span>
 <span class="sd">    </span>
@@ -1094,14 +1097,20 @@ table {
     
     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
         <span class="n">evalf</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">evaluation_at</span><span class="p">(</span><span class="n">val_dict</span><span class="p">)</span>
-        <span class="n">derif</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">derivative_at</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">val_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;forward&#39;</span><span class="p">:</span>    
+            <span class="n">derif</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">derivative_at</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">val_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">back_propagation</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">val_dict</span><span class="p">)</span>
+            <span class="n">derif</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">v</span><span class="o">.</span><span class="n">bder</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">val_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">evalf</span><span class="o">/</span><span class="n">derif</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">evaluation_at</span><span class="p">(</span><span class="n">val_dict</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">:</span> <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">itr</span> <span class="o">&gt;</span> <span class="n">max_itr</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Exceeded allowable max iterations without finding a root.&quot;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Exceeded allowable max iterations without finding a root.&quot;</span><span class="p">)</span>
+
             <span class="k">break</span>
         
         <span class="n">itr</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1119,7 +1128,7 @@ table {
       
   <div class="item">
     <div class="name def" id="rootfinding.newton_scalar">
-    <p>def <span class="ident">newton_scalar</span>(</p><p>f, init_val_dict, max_itr, tol=1e-08)</p>
+    <p>def <span class="ident">newton_scalar</span>(</p><p>f, init_val_dict, max_itr, method=&#39;forward&#39;, tol=1e-08)</p>
     </div>
     
 
@@ -1130,6 +1139,8 @@ table {
 <p>f: expression 
 init_val_dict: dictionary containing initial value of variables
 max_itr: maximum iteration before the algorithm stops
+method: string, default set to 'forward mode', in all other cases 
+use 'backward'
 tol: tolerance, the minimum threshold for absolute 
 difference of value of f from 0 for the algorithm to stop</p>
 <h1>RETURNS</h1>
@@ -1137,7 +1148,7 @@ difference of value of f from 0 for the algorithm to stop</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-rootfinding.newton_scalar', this);">Show source &equiv;</a></p>
   <div id="source-rootfinding.newton_scalar" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">newton_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">init_val_dict</span><span class="p">,</span> <span class="n">max_itr</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">newton_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">init_val_dict</span><span class="p">,</span> <span class="n">max_itr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;forward&#39;</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Newton&#39;s Method finding 0 root for a single expression </span>
 <span class="sd">    </span>
@@ -1146,6 +1157,8 @@ difference of value of f from 0 for the algorithm to stop</p>
 <span class="sd">    f: expression </span>
 <span class="sd">    init_val_dict: dictionary containing initial value of variables</span>
 <span class="sd">    max_itr: maximum iteration before the algorithm stops</span>
+<span class="sd">    method: string, default set to &#39;forward mode&#39;, in all other cases </span>
+<span class="sd">    use &#39;backward&#39;</span>
 <span class="sd">    tol: tolerance, the minimum threshold for absolute </span>
 <span class="sd">    difference of value of f from 0 for the algorithm to stop</span>
 <span class="sd">    </span>
@@ -1158,14 +1171,20 @@ difference of value of f from 0 for the algorithm to stop</p>
     
     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
         <span class="n">evalf</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">evaluation_at</span><span class="p">(</span><span class="n">val_dict</span><span class="p">)</span>
-        <span class="n">derif</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">derivative_at</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">val_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;forward&#39;</span><span class="p">:</span>    
+            <span class="n">derif</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">derivative_at</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">val_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">back_propagation</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">val_dict</span><span class="p">)</span>
+            <span class="n">derif</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">v</span><span class="o">.</span><span class="n">bder</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">val_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">evalf</span><span class="o">/</span><span class="n">derif</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">evaluation_at</span><span class="p">(</span><span class="n">val_dict</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">:</span> <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">itr</span> <span class="o">&gt;</span> <span class="n">max_itr</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Exceeded allowable max iterations without finding a root.&quot;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Exceeded allowable max iterations without finding a root.&quot;</span><span class="p">)</span>
+
             <span class="k">break</span>
         
         <span class="n">itr</span> <span class="o">+=</span> <span class="mi">1</span>
