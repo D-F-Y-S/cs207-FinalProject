@@ -17,12 +17,16 @@ def equals(a, b, tol=1e-10):
 def test_newton_scalar():
     """
     Function testing Newton's Method on finding roots for 1-D or 2-D scalar 
-    function
-    """
+    function using both forward and backward modes
+    """ 
     # test 1-d scalar function
     x = fwd.Variable()
     f = x - fwd.sin(x)
     root_1d = rf.newton_scalar(f, {x: 3.0}, 100, tol=1e-6)
+    root_x  = root_1d[x]
+    assert equals((root_x)-np.sin(root_x), 0.0, tol=1e-6)
+    root_1d = rf.newton_scalar(f, {x: 3.0}, 100, tol=1e-6, 
+    method = 'backward')
     root_x  = root_1d[x]
     assert equals((root_x)-np.sin(root_x), 0.0, tol=1e-6)
     
@@ -32,6 +36,10 @@ def test_newton_scalar():
     root_2d = rf.newton_scalar(g, {x: 1.0, y: 2.0}, 100, tol=1e-6)
     root_x, root_y = root_2d[x], root_2d[y]
     assert equals(root_x**2+root_y**2, 0.0, tol=1e-6)
+    root_2d = rf.newton_scalar(g, {x: 1.0, y: 2.0}, 100, tol=1e-6),
+    method = 'backward')
+    root_x, root_y = root_2d[x], root_2d[y]
+    assert equals(root_x**2+root_y**2, 0.0, tol = 1e-6)
     # test warning
     x = fwd.Variable()
     f = x - fwd.sin(x)
