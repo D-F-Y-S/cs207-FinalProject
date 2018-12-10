@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-import autodiff.forward     as fwd
+import autodiff.forward as fwd
 import autodiff.rootfinding as rf
 import autodiff.plot as plot
 
