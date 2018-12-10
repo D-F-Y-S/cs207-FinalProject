@@ -4,7 +4,22 @@ from numpy.linalg import norm
 from scipy.linalg import solve
 
 def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
+    """
+    Broyden–Fletcher–Goldfarb–Shanno finding minimum for a 
+    single expression
     
+    INPUTS
+    =======
+    f: expression 
+    init_val_dict:dictionary containing initial value of variables
+    max_iter: maximum iteration before the algorithm stops
+    stop_stepsize: tolerance, the minimum threshold for absolute 
+    difference of value of f from 0 for the algorithm to stop
+    
+    RETURNS
+    ========
+    variable values corresponding to the minimum value of f
+    """
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
     B          = np.eye(len(curr_point))
@@ -36,7 +51,26 @@ def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
 
 
 def newton(f,  init_val_dict, max_iter=1000, stop_stepsize=1e-8,return_history=False):
+    """
+    Newton's Method finding minimum for a single expression
     
+    INPUTS
+    =======
+    f: expression 
+    init_val_dict:dictionary containing initial value of variables
+    max_itr: maximum iteration before the algorithm stops
+    stop_stepsize: tolerance, the minimum threshold for absolute 
+    difference of value of f from 0 for the algorithm to stop
+    return_history: default set to False. If True, return the trajectory
+    of the algorithm including the final answer
+    
+    RETURNS
+    ========
+    If return_history = False: variable values corresponding to the 
+    minimum value of f
+    If return_history = True, return the trajectory
+    of the algorithm including the final answer
+    """
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
     f_grad = f.gradient_at(init_val_dict)
@@ -65,6 +99,28 @@ def newton(f,  init_val_dict, max_iter=1000, stop_stepsize=1e-8,return_history=F
 
 
 def gradient_descent(f,init_val_dict, learning_rate=0.001, max_iter=1000, stop_stepsize=1e-6,return_history=False):
+    """
+    Gradient Descent finding minimum for a 
+    single expression
+    
+    INPUTS
+    =======
+    f: expression 
+    init_val_dict:dictionary containing initial value of variables
+    learning_rate: the step size between iterations
+    max_iter: maximum iteration before the algorithm stops
+    stop_stepsize: tolerance, the minimum threshold for absolute 
+    difference of value of f from 0 for the algorithm to stop
+    return_history: default set to False. If True, return the trajectory
+    of the algorithm including the final answer
+    
+    RETURNS
+    ========
+    If return_history = False: variable values corresponding to the 
+    minimum value of f
+    If return_history = True, return the trajectory
+    of the algorithm including the final answer
+    """
     f_grad = f.gradient_at(init_val_dict)
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
