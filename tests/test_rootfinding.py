@@ -36,7 +36,7 @@ def test_newton_scalar():
     root_2d = rf.newton_scalar(g, {x: 1.0, y: 2.0}, 100, tol=1e-6)
     root_x, root_y = root_2d[x], root_2d[y]
     assert equals(root_x**2+root_y**2, 0.0, tol=1e-6)
-    root_2d = rf.newton_scalar(g, {x: 1.0, y: 2.0}, 100, tol=1e-6),
+    root_2d = rf.newton_scalar(g, {x: 1.0, y: 2.0}, 100, tol=1e-6,
     method = 'backward')
     root_x, root_y = root_2d[x], root_2d[y]
     assert equals(root_x**2+root_y**2, 0.0, tol = 1e-6)
