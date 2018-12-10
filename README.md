@@ -55,7 +55,7 @@ The class of functions consisting of the polynomials, the exponential functions,
 
 For the first derivative:
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=\dfrac{dy}{dx}&space;=&space;\dfrac{dy}{du}\cdot\dfrac{du}{dx}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\dfrac{dy}
+<a href="https://www.codecogs.com/eqnedit.php?latex=\dfrac{dy}{dx}=\dfrac{dy}{du}\cdot\dfrac{du}{dx}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\dfrac{dy}{dx}=\dfrac{dy}{du}\cdot\dfrac{du}{dx}" title="\dfrac{dy}{dx}=\dfrac{dy}{du}\cdot\dfrac{du}{dx}" /></a>
 
 For the second derivative:
 
