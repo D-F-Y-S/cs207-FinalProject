@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import autodiff.forward as fwd
-import autodiff.plot as plot
+from autodiff.plot import plot_contour
 
 def testplot():
     """
@@ -9,5 +9,5 @@ def testplot():
     """
     x, y = fwd.Variable(), fwd.Variable()
     f= 100.0*(y - x**2)**2 + (1 - x)**2.0
-    plot_contour(f, {x:-2,y:-1}, plot_range=[-3,3],method = 'gradient_descent')
+    plot_contour(f, {x:-2,y:-1}, x, y, plot_range=[-3,3],method = 'gradient_descent')
   
