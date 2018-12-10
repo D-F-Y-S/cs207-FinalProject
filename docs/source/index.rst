@@ -2,17 +2,19 @@ DFYS AutoDiff Documentation
 ====================================
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+    :glob:
 
    Overview <self>
    Background.ipynb
-   Installation
-   Software Organization
-   Usage
-   Implementation
-   Featured Application
-   Summary
-   License
+   Installation.rst
+   Software-Organization.rst
+   Usage.rst
+   Implementation.ipynb
+   Featured Application.ipynb
+   License.rst
+
+.. only:: html
 
 
 Introduction
@@ -29,12 +31,3 @@ This project_ is hosted on GitHub.
 
 .. _project: https://github.com/D-F-Y-S/cs207-FinalProject
 
-
-.. Below are comments - just hiding for now
-.. Indices and tables
-.. ==================
-
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-
-.. * :ref:`search`
