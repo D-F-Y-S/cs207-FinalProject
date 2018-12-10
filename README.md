@@ -54,13 +54,9 @@ The class of functions consisting of the polynomials, the exponential functions,
 + Core of automatic differentiation
 
 For the first derivative:
-$$
-\dfrac{dy}{dx} = \dfrac{dy}{du}\cdot\dfrac{du}{dx}
-$$
+$$\dfrac{dy}{dx} = \dfrac{dy}{du}\cdot\dfrac{du}{dx}$$
 For the second derivative:
-$$
-\dfrac{\partial^2 t}{\partial x_i \partial x_j} = \sum_k(\dfrac{\partial y}{\partial u_k}\dfrac{u_k^2}{\partial x_i \partial x_j}) + \sum_{k,l}(\dfrac{\partial^2 y}{\partial u_k \partial u_l}\dfrac{\partial u_k}{\partial x_i}\dfrac{\partial u_l}{\partial x_j})
-$$
+$$\dfrac{\partial^2 t}{\partial x_i \partial x_j} = \sum_k(\dfrac{\partial y}{\partial u_k}\dfrac{u_k^2}{\partial x_i \partial x_j}) + \sum_{k,l}(\dfrac{\partial^2 y}{\partial u_k \partial u_l}\dfrac{\partial u_k}{\partial x_i}\dfrac{\partial u_l}{\partial x_j})$$
 **Topological Graph**
 + Each node represent a variable
 + Arrows indicate topological orders(order of operations) and operations themselves.
@@ -94,11 +90,10 @@ let y denote our final output variable and $u_j$, $v_j$ denote the intermediate 
 the easiest way to install `autodiff` is by `pip`. Just type in `pip install DYFS-autodiff` in the command line.
 
 
-```python
+```bash
 !pip install DFYS-autodiff
 ```
 
-    Requirement already satisfied: DFYS-autodiff in /Users/chenfeiyu/anaconda3/lib/python3.6/site-packages (0.0.0)
 
 
 Or, the user can choose to install `autodiff` directly from the source in this repository. We suppose that the user has already installed `pip` and `virtualenv`:
@@ -422,7 +417,7 @@ docs/
 
     milestone1.ipynb
     milestone2.ipynb
-    documentat.ipynb
+    document.ipynb
     
 .gitignore
 .travis.yml
