@@ -6,6 +6,7 @@ def plot_contour(f, init_val_dict, x,y,plot_range=[-3,3],method = 'gradient_desc
     """This function plots a countour map according to the values of 
     expression of interests. It finds the minimum point using either Gradient 
     Descent or Newton's Method and then color it on the contour map.
+    
     INPUTS
     =======
     f: expression containing two sub_expressions
@@ -40,8 +41,3 @@ def plot_contour(f, init_val_dict, x,y,plot_range=[-3,3],method = 'gradient_desc
     plt.plot(x_gd,y_gd,'.',alpha=0.1)
     plt.show()
 
-'''Example
-x,y = Variable(),Variable()
-f = 100.0*(y - x**2)**2 + (1 - x)**2.0
-plot_contour(f, {x:-2,y:-1}, plot_range=[-3,3],method = 'gradient_descent')
-'''

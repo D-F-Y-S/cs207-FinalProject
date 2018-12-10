@@ -462,6 +462,7 @@ class Add:
         sub_expr1: expression or constant 
         sub_expr2: expression or constant 
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -519,6 +520,7 @@ class Sub:
         sub_expr1: expression or constant 
         sub_expr2: expression or constant 
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -597,6 +599,7 @@ class Mul:
         sub_expr1: expression or constant 
         sub_expr2: expression or constant 
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -678,6 +681,7 @@ class Div:
         sub_expr1: expression or constant 
         sub_expr2: expression or constant 
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -753,6 +757,7 @@ class Pow:
         sub_expr1: expression or constant
         sub_expr2: expression or constant
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -826,6 +831,7 @@ class Exp:
         =======
         sub_expr1: expression or constant
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -911,6 +917,7 @@ class Neg:
         =======
         sub_expr1: expression or constant 
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -976,6 +983,7 @@ class Sin:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1015,6 +1023,7 @@ class Cos:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1042,6 +1051,7 @@ class Cos:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1081,6 +1091,7 @@ class Tan:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1109,6 +1120,7 @@ class Tan:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1148,6 +1160,7 @@ class Cotan:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1164,6 +1177,7 @@ class Cotan:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1203,6 +1217,7 @@ class Sec:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1221,6 +1236,7 @@ class Sec:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1261,6 +1277,7 @@ class Csc:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1279,6 +1296,7 @@ class Csc:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1319,6 +1337,7 @@ class Sinh:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1336,6 +1355,7 @@ class Sinh:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1376,6 +1396,7 @@ class Cosh:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1393,6 +1414,7 @@ class Cosh:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1433,6 +1455,7 @@ class Tanh:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1451,6 +1474,7 @@ class Tanh:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1492,6 +1516,7 @@ class Csch:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1511,6 +1536,7 @@ class Csch:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1550,6 +1576,7 @@ class Sech:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1569,6 +1596,7 @@ class Sech:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1610,6 +1638,7 @@ class Coth:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1629,6 +1658,7 @@ class Coth:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1671,6 +1701,7 @@ class Arcsin:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1690,6 +1721,7 @@ class Arcsin:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1731,6 +1763,7 @@ class Arccos:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1750,6 +1783,7 @@ class Arccos:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1791,6 +1825,7 @@ class Arctan:
         val_dict: a dictionary containing variable name and values.
         var: variable of interest
         order: default to 1, set to 2 if 2nd derivative is desired
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
@@ -1810,6 +1845,7 @@ class Arctan:
         =======
         sub_expr1: expression whose components include var(or itself be to var)
         var: variable of interest
+        
         RETURNS
         ========
         derivative of var with respect to sub_expr1
