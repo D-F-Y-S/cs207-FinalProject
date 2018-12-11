@@ -35,5 +35,5 @@ The user can choose to install `autodiff` directly from the source in this repos
 5. install `autodiff` by `pip install -e .`
 
 
-**See [Getting Started] (https://cs207-finalproject.readthedocs.io/en/latest/Getting%20Started.html) and the full document hosted on Read the Docs [here](https://cs207-finalproject.readthedocs.io/en/latest/)**
+**See [Getting Started](https://cs207-finalproject.readthedocs.io/en/latest/Getting%20Started.html) and the full document hosted on Read the Docs [here](https://cs207-finalproject.readthedocs.io/en/latest/)**
 
