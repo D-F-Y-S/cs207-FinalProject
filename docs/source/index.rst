@@ -5,13 +5,13 @@ DFYS AutoDiff Documentation
     :maxdepth: 2
     :glob:
 
-   Table-of-Content <self>
+   Table of Content <self>
    Background.ipynb
    Installation.rst
    Getting Started.ipynb
-   Software Organization.ipynb
-   Implementation Details.ipynb
    Libraries Demo.ipynb
+   Implementation Details.ipynb
+   Software Organization.ipynb
    License.rst
 
 .. only:: html
