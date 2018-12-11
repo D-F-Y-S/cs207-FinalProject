@@ -20,7 +20,9 @@ DFYS AutoDiff Documentation
 
 
 
-This project_ is hosted on GitHub.
+This project is hosted on GitHub_ and PyPI.
 
-.. _project: https://github.com/D-F-Y-S/cs207-FinalProject
+.. _GitHub: https://github.com/D-F-Y-S/cs207-FinalProject
+
+.. _PyPI: https://pypi.org/project/DFYS-autodiff/
 
