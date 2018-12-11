@@ -13,6 +13,7 @@ DFYS AutoDiff Documentation
    Implementation Details.ipynb
    Functions Details.rst
    Software Organization.ipynb
+   Future Development.rst
    License.rst
    
 
