@@ -1,7 +1,6 @@
 Functions Details
 ==================
 
-
 Autodiff.forward
 -----------------
 
