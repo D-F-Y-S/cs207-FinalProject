@@ -1,0 +1,191 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Implementation Details &#8212; DFYS-Autodiff 0.0.4 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Libraries Demo" href="Libraries Demo.html" />
+    <link rel="prev" title="Software Organization" href="Software Organization.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="Implementation-Details">
+<h1>Implementation Details<a class="headerlink" href="#Implementation-Details" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="High-level-Design">
+<h2>High-level Design<a class="headerlink" href="#High-level-Design" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Core-Functions:-Static-Structure">
+<h3>Core Functions: Static Structure<a class="headerlink" href="#Core-Functions:-Static-Structure" title="Permalink to this headline">¶</a></h3>
+<p>The centural data structure in <code class="docutils literal"><span class="pre">autodiff</span></code> are <code class="docutils literal"><span class="pre">Expression</span></code> and
+<code class="docutils literal"><span class="pre">ElementaryFunction</span></code> (which is the common interface shared by <code class="docutils literal"><span class="pre">Add</span></code>,
+<code class="docutils literal"><span class="pre">Mul</span></code>, <code class="docutils literal"><span class="pre">Pow</span></code>, <code class="docutils literal"><span class="pre">Exp</span></code>, <code class="docutils literal"><span class="pre">Sin</span></code>…). <code class="docutils literal"><span class="pre">Expression</span></code> represents a
+mathematical expression. It is composed of one <code class="docutils literal"><span class="pre">ElementaryFunction</span></code>
+plus two sub-<code class="docutils literal"><span class="pre">Expression</span></code>’s. <code class="docutils literal"><span class="pre">Expression</span></code> has two child class:
+<code class="docutils literal"><span class="pre">Variable</span></code>, which represents a ‘base’ variable and <code class="docutils literal"><span class="pre">Constant</span></code>, which
+represents a constant.</p>
+</div>
+<div class="section" id="Core-Functions:-Dynamic-Behavior">
+<h3>Core Functions: Dynamic Behavior<a class="headerlink" href="#Core-Functions:-Dynamic-Behavior" title="Permalink to this headline">¶</a></h3>
+<p>When a <code class="docutils literal"><span class="pre">Expression</span></code>’s <code class="docutils literal"><span class="pre">derivative_at</span></code> method is called, it will pass
+its sub-<code class="docutils literal"><span class="pre">Expression</span></code>(‘s) to the <code class="docutils literal"><span class="pre">ElementaryFunction</span></code>’s
+<code class="docutils literal"><span class="pre">derivative_at</span></code> method. <code class="docutils literal"><span class="pre">ElementaryFunction</span></code>’s <code class="docutils literal"><span class="pre">derivative_at</span></code>
+method will then compute the derivative based on chain rule. In this
+process, the <code class="docutils literal"><span class="pre">ElementaryFunction</span></code> will need the values and derivatives
+of the sub-<code class="docutils literal"><span class="pre">Expression</span></code>(s), so it will call the <code class="docutils literal"><span class="pre">evaluation_at</span></code>
+method and <code class="docutils literal"><span class="pre">derivative_at</span></code> method of the sub-<code class="docutils literal"><span class="pre">Expression</span></code>(‘s),
+and use the returned value to calculate the derivative. In other words,
+<code class="docutils literal"><span class="pre">Expression</span></code> and <code class="docutils literal"><span class="pre">ElementaryFunctions</span></code> will be calling each other
+recursively, until the base of this recursive process is reached.</p>
+<p>The base of this recursive process lies in the <code class="docutils literal"><span class="pre">Constant</span></code> class and
+the <code class="docutils literal"><span class="pre">Variable</span></code> class. When a <code class="docutils literal"><span class="pre">Constant</span></code> is called to give its
+derivative, it returns 0. When a <code class="docutils literal"><span class="pre">Variable</span></code> is called to give its
+derivative, it checks whether itself is the variable to be taken
+derivative with respect of, if yes, then it returns 1.0, otherwise it
+returns 0.0.</p>
+</div>
+<div class="section" id="On-Second-Order-derivatives">
+<h3>On Second Order derivatives<a class="headerlink" href="#On-Second-Order-derivatives" title="Permalink to this headline">¶</a></h3>
+<p>The implementation of second order derivative is conceptually very
+similar to the implementation of first order derivative, except that it
+implements a different chain rule. The knowledge of the chain rule is
+encompassed within the <code class="docutils literal"><span class="pre">derivative_at</span></code> method of
+<code class="docutils literal"><span class="pre">ElementaryFunction</span></code>. Because all the <code class="docutils literal"><span class="pre">ElementaryFunction</span></code>s
+involves either one or two sub-<code class="docutils literal"><span class="pre">Expression</span></code>, the Faà di Bruno’s
+formula is actually much less frightening to implement than it seems in
+the following figure.</p>
+</div>
+</div>
+<div class="section" id="Core-Classes">
+<h2>Core Classes<a class="headerlink" href="#Core-Classes" title="Permalink to this headline">¶</a></h2>
+<p>The core class of <code class="docutils literal"><span class="pre">autodiff</span></code> is <code class="docutils literal"><span class="pre">Expression</span></code> and its child classes
+(<code class="docutils literal"><span class="pre">Variable</span></code> and <code class="docutils literal"><span class="pre">Constant</span></code>). They share the same interface: all
+implements their own <code class="docutils literal"><span class="pre">evaluation_at</span></code> and <code class="docutils literal"><span class="pre">derivative_at</span></code> methods.
+The dunder methods of <code class="docutils literal"><span class="pre">Expression</span></code> is overridden so that any operation
+on <code class="docutils literal"><span class="pre">Expression</span></code> will also return an <code class="docutils literal"><span class="pre">Expression</span></code>. <code class="docutils literal"><span class="pre">Variable</span></code> and
+<code class="docutils literal"><span class="pre">Constant</span></code> inherites these dunder methods so that they have the same
+behavior as <code class="docutils literal"><span class="pre">Expression</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">Expression</span></code> is composed of one <code class="docutils literal"><span class="pre">ElementaryFunction</span></code> and two
+sub-<code class="docutils literal"><span class="pre">Expression</span></code>s. <code class="docutils literal"><span class="pre">ElementaryFunction</span></code>s like <code class="docutils literal"><span class="pre">Sin</span></code>, <code class="docutils literal"><span class="pre">Exp</span></code>
+and <code class="docutils literal"><span class="pre">Add</span></code> implements the chain rule associated with the corresponding
+elementary function. Note that <code class="docutils literal"><span class="pre">sin</span></code> and <code class="docutils literal"><span class="pre">exp</span></code> are different from
+<code class="docutils literal"><span class="pre">Sin</span></code> and <code class="docutils literal"><span class="pre">Exp</span></code>. The former two are actually factory functions that
+returns a <code class="docutils literal"><span class="pre">Expression</span></code> which has <code class="docutils literal"><span class="pre">Sin</span></code> and <code class="docutils literal"><span class="pre">Exp</span></code> as its
+<code class="docutils literal"><span class="pre">ElementaryFunction</span></code>.</p>
+</div>
+<div class="section" id="External-Dependencies">
+<h2>External Dependencies<a class="headerlink" href="#External-Dependencies" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">autodiff</span></code> depends on <code class="docutils literal"><span class="pre">numpy</span></code>. All of <code class="docutils literal"><span class="pre">autodiff</span></code>’s calculation is
+done in numpy for the efficiency and the advantage of vectorization. The
+<code class="docutils literal"><span class="pre">optimize</span></code> moduel depends on <code class="docutils literal"><span class="pre">scipy</span></code> for solving linear systems. The
+<code class="docutils literal"><span class="pre">plot</span></code> module depends on <code class="docutils literal"><span class="pre">matplotlib</span></code> for plotting.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DFYS-Autodiff</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Table-of-Content</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Getting Started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Software Organization.html">Software Organization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Implementation Details</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#High-level-Design">High-level Design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Core-Functions:-Static-Structure">Core Functions: Static Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Core-Functions:-Dynamic-Behavior">Core Functions: Dynamic Behavior</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#On-Second-Order-derivatives">On Second Order derivatives</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Core-Classes">Core Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#External-Dependencies">External Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Libraries Demo.html">Libraries Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="License.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Software Organization.html" title="previous chapter">Software Organization</a></li>
+      <li>Next: <a href="Libraries Demo.html" title="next chapter">Libraries Demo</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Feiyu Chen; Yueting Luo; Yan Zhao.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Implementation Details.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

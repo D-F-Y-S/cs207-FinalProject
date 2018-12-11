@@ -14,4 +14,5 @@ by
 
 [![Doc Status](https://readthedocs.org/projects/cs207-finalproject/badge/?version=latest)](https://cs207-finalproject.readthedocs.io/en/latest/?badge=latest)
 
-See Getting Started and the full document [here](http://htmlpreview.github.io/?https://github.com/D-F-Y-S/cs207-FinalProject/blob/master/docs/document.html)
+See Getting Started and the full document hosted on Read the Docs [here](https://cs207-finalproject.readthedocs.io/en/latest/)
+

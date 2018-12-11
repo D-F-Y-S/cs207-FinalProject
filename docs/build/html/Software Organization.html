@@ -1,0 +1,198 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Software Organization &#8212; DFYS-Autodiff 0.0.4 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Implementation Details" href="Implementation Details.html" />
+    <link rel="prev" title="Getting Started" href="Getting Started.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="Software-Organization">
+<h1>Software Organization<a class="headerlink" href="#Software-Organization" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Directory-Structure">
+<h2>Directory Structure<a class="headerlink" href="#Directory-Structure" title="Permalink to this headline">¶</a></h2>
+<p>The structure of <code class="docutils literal"><span class="pre">autodiff</span></code>’s project directory is as follows.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">autodiff</span><span class="o">/</span>
+
+    <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">forward</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">backward</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">optimize</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">rootfinding</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">tests</span><span class="o">/</span>
+
+    <span class="n">test_forward</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">test_backward</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">test_optimize</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">test_rootfinding</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">test_plot</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">docs</span><span class="o">/</span>
+
+    <span class="n">milestone1</span><span class="o">.</span><span class="n">ipynb</span>
+    <span class="n">milestone2</span><span class="o">.</span><span class="n">ipynb</span>
+    <span class="n">Getting</span> <span class="n">Started</span><span class="o">.</span><span class="n">ipnb</span>
+    <span class="n">forward_demo</span><span class="o">.</span><span class="n">ipynb</span>
+    <span class="n">optimize_demo</span><span class="o">.</span><span class="n">ipynb</span>
+
+
+<span class="o">.</span><span class="n">gitignore</span>
+<span class="o">.</span><span class="n">travis</span><span class="o">.</span><span class="n">yml</span>
+<span class="n">LICENSE</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">README</span><span class="o">.</span><span class="n">md</span>
+<span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">setup</span><span class="o">.</span><span class="n">cfg</span>
+<span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>The source codes lies in the directory <code class="docutils literal"><span class="pre">autodiff</span></code>, in which the
+<code class="docutils literal"><span class="pre">__init__.py</span></code> is there to make <code class="docutils literal"><span class="pre">autodiff</span></code> a package. The file
+<code class="docutils literal"><span class="pre">forward.py</span></code> contains the source code of forward mode
+autodifferentiation. The file <code class="docutils literal"><span class="pre">backward.py</span></code> contains the source code
+of backward mode autodifferentiation. The file <code class="docutils literal"><span class="pre">optimize.py</span></code> contains
+optimization routines built on top of autodifferentiation. The file
+<code class="docutils literal"><span class="pre">rootfinding.py</span></code> contains rootfinding routines. The file <code class="docutils literal"><span class="pre">plot.py</span></code>
+contains utility functions for plotting.</p>
+<p>The test suites lies in the directory <code class="docutils literal"><span class="pre">tests</span></code>. The test files are
+named to represent the module that they test.</p>
+<p>The documents lies in the directory <code class="docutils literal"><span class="pre">docs</span></code>. <code class="docutils literal"><span class="pre">milestone1.ipynb</span></code> is
+the history version of document when submitting milestone 1.
+<code class="docutils literal"><span class="pre">milestone2.ipynb</span></code> is the history version of document when submitting
+milestone 2. <code class="docutils literal"><span class="pre">document.ipynb</span></code>, which is this file itself, is the final
+document.</p>
+<p>Other files in the rrot directory includes: <code class="docutils literal"><span class="pre">.gitignore</span></code>, which
+specifies the files that should not be tracked by git, <code class="docutils literal"><span class="pre">.travis.yml</span></code>,
+which is the configuration file for TravisCI, <code class="docutils literal"><span class="pre">LICENSE.txt</span></code>, which is
+the license for this package, <code class="docutils literal"><span class="pre">README.md</span></code>, which is the README file
+for this package, <code class="docutils literal"><span class="pre">requirements.txt</span></code>, which specifies the dependensies
+of this package, <code class="docutils literal"><span class="pre">setup.cfg</span></code>, which is the configuration file for
+installing this package, <code class="docutils literal"><span class="pre">setup.py</span></code>, which is the script for
+installing this package.</p>
+</div>
+<div class="section" id="Modules">
+<h2>Modules<a class="headerlink" href="#Modules" title="Permalink to this headline">¶</a></h2>
+<p>There are now five modules: <code class="docutils literal"><span class="pre">autodiff.forward</span></code> for forward mode
+autodifferentiation, <code class="docutils literal"><span class="pre">backward</span></code> for backward mode autodifferentiation,
+<code class="docutils literal"><span class="pre">optimize</span></code> for optimization, <code class="docutils literal"><span class="pre">rootfinding</span></code> for rootfinding, and
+<code class="docutils literal"><span class="pre">plot</span></code> for plotting.</p>
+</div>
+<div class="section" id="Test-Automation">
+<h2>Test Automation<a class="headerlink" href="#Test-Automation" title="Permalink to this headline">¶</a></h2>
+<p>The continuous integration is done by <code class="docutils literal"><span class="pre">TravisCI</span></code> and <code class="docutils literal"><span class="pre">Coveralls</span></code>.</p>
+</div>
+<div class="section" id="Distribution">
+<h2>Distribution<a class="headerlink" href="#Distribution" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">autodiff</span></code> is distributed with
+<a class="reference external" href="https://pypi.org/project/DFYS-autodiff/">PyPI</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DFYS-Autodiff</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Table-of-Content</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Getting Started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Software Organization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Directory-Structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Modules">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Test-Automation">Test Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Distribution">Distribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Implementation Details.html">Implementation Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Libraries Demo.html">Libraries Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="License.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Getting Started.html" title="previous chapter">Getting Started</a></li>
+      <li>Next: <a href="Implementation Details.html" title="next chapter">Implementation Details</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Feiyu Chen; Yueting Luo; Yan Zhao.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Software Organization.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
