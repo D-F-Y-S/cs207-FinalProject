@@ -7,12 +7,14 @@ DFYS AutoDiff Documentation
 
    Table of Content <self>
    Background.ipynb
-   Installation.rst
+   Installation.ipynb
    Getting Started.ipynb
    Libraries Demo.ipynb
    Implementation Details.ipynb
+   Functions Details.rst
    Software Organization.ipynb
    License.rst
+   
 
 .. only:: html
 
