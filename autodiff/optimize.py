@@ -3,7 +3,7 @@ from numpy.linalg import multi_dot
 from numpy.linalg import norm
 from scipy.linalg import solve
 
-def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
+def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8,return_history=False):
     """
     Broyden–Fletcher–Goldfarb–Shanno finding minimum for a 
     single expression
@@ -23,6 +23,7 @@ def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
     variables  = [var for var in init_val_dict.keys()]
     curr_point = np.array([v for k, v in init_val_dict.items()])
     B          = np.eye(len(curr_point))
+    history = [curr_point.tolist()]
     
     for i in range(max_iter):
         
@@ -46,6 +47,10 @@ def bfgs(f, init_val_dict, max_iter=2000, stop_stepsize=1e-8):
         deltaB = multi_dot([y, y.T])/multi_dot([y.T, s]) \
                  - multi_dot([B, s, s.T, B])/multi_dot([s.T, B, s]) 
         B = B + deltaB
+        history.append(curr_point.tolist())
+
+    if return_history:
+        return history    
     
     return {var: val for var, val in zip(variables, curr_point)}
 
