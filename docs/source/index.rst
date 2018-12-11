@@ -5,7 +5,7 @@ DFYS AutoDiff Documentation
     :maxdepth: 2
     :glob:
 
-   Table of Content <self>
+   Table of Contents <self>
    Background.ipynb
    Installation.ipynb
    Getting Started.ipynb
