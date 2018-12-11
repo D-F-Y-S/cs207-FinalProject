@@ -18,9 +18,11 @@ by
 
 #### Install Through PyPI
 
-The easiest way to install `autodiff` is by `pip`. Just type in `pip install DYFS-autodiff` in the command line.
+The easiest way to install `autodiff` is by `pip`. In the command line, type in:
 
-`pip install DFYS-autodiff`
+```
+pip install DFYS-autodiff
+```
 
 
 

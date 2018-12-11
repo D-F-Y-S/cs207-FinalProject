@@ -14,5 +14,6 @@ Since most machine learning problems can be formulated as optimization problems,
 3. Improvement
 ---------------
 
-If user wish to add additional feature for the DFYS-autodiff package, please go to our [github](https://github.com/D-F-Y-S/cs207-FinalProject) repository, fork the repository, make the improvement, and submit pull request to us. 
+If user wish to add additional feature for the DFYS-autodiff package, please go to our GitHub_ repository, fork the repository, make the improvement, and submit pull request to us. 
 
+.. _GitHub:: https://github.com/D-F-Y-S/cs207-FinalProject 
