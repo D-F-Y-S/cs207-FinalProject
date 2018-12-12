@@ -13,5 +13,5 @@ pip install DFYS-autodiff
 2. Call pytest
 
 ```
-pytest --pyargs gradpy
+pytest --pyargs DFYS-autodiff
 ```

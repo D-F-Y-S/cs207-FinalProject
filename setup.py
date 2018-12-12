@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
                  name="DFYS_autodiff",
-                 version="0.1.1",
+                 version="1.0.1",
                  author="Feiyu Chen; Yueting Luo; Yan Zhao",
                  author_email="yluo@hsph.harvard.edu",
                  description="An automatic differentiation package",
