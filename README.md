@@ -12,11 +12,11 @@
 
 **Group Number:** 12
 
-**Group Member:**  Feiyu Chen, Yueting Luo, Yan Zhao
 
-### Documentation
+## Documentation
 
 **[Getting started](https://cs207-finalproject.readthedocs.io/en/latest/Getting%20Started.html) and see the full documentation on [Read the Docs](https://cs207-finalproject.readthedocs.io/en/latest/)**
+
 
 ### Quick Installation Guide
 
@@ -39,7 +39,7 @@ The user can choose to install `autodiff` directly from the source in this repos
 5. install `autodiff` by `pip install -e .`
 
 
-### Testing
+## Testing
 
 ```
 pytest --pyargs DFYS-autodiff
